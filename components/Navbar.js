@@ -3,9 +3,9 @@
 import { useEffect, useRef, useState } from 'react'
 
 export default function Navbar({ variant = 'home' }) {
-  const isWork = variant === 'work'
-  const prefix = isWork ? '/#' : '#'
-  const brandHref = isWork ? '/' : '#home'
+  const isHome = variant === 'home'
+  const prefix = isHome ? '#' : '/#'
+  const brandHref = isHome ? '#home' : '/'
   const [menuOpen, setMenuOpen] = useState(false)
   const navRef = useRef(null)
 
@@ -42,7 +42,7 @@ export default function Navbar({ variant = 'home' }) {
 
   /* Active nav link on scroll — mirrors js/main.js §8 (home page only) */
   useEffect(() => {
-    if (isWork) return
+    if (!isHome) return
     const navItems = Array.from(document.querySelectorAll('.nav-links a'))
     const sections = Array.from(document.querySelectorAll('section, div.top-hero-card'))
     if (!sections.length) return
@@ -85,7 +85,7 @@ export default function Navbar({ variant = 'home' }) {
             <li>
               <a
                 href={`${prefix}home`}
-                className={isWork ? undefined : 'active'}
+                className={isHome ? 'active' : undefined}
                 onClick={() => setMenuOpen(false)}
               >
                 Home
@@ -104,10 +104,19 @@ export default function Navbar({ variant = 'home' }) {
             <li>
               <a
                 href="/our-work"
-                className={`nav-link-work${isWork ? ' active' : ''}`}
+                className={`nav-link-work${variant === 'work' ? ' active' : ''}`}
                 onClick={() => setMenuOpen(false)}
               >
                 Our Work
+              </a>
+            </li>
+            <li>
+              <a
+                href="/blog"
+                className={`nav-link-blog${variant === 'blog' ? ' active' : ''}`}
+                onClick={() => setMenuOpen(false)}
+              >
+                Blog
               </a>
             </li>
             <li>

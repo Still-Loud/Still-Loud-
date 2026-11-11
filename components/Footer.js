@@ -91,6 +91,9 @@ export default function Footer({ variant = 'home' }) {
                 <a href="/our-work">Our Work</a>
               </li>
               <li>
+                <a href="/blog">Blog</a>
+              </li>
+              <li>
                 <a href={`${prefix}reviews`}>Reviews</a>
               </li>
               <li>

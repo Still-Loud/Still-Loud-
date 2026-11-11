@@ -10,6 +10,12 @@ import Footer from '../../components/Footer'
 import BackToTop from '../../components/BackToTop'
 import TawkTo from '../../components/TawkTo'
 
+export const metadata = {
+  alternates: {
+    canonical: '/',
+  },
+}
+
 export default function HomePage() {
   return (
     <>

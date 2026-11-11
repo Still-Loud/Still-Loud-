@@ -1,7 +1,25 @@
+import { Manrope, Poppins } from 'next/font/google'
 import Script from 'next/script'
 
 import '../../styles/style.css'
 import '../../styles/responsive.css'
+
+/* Self-hosted at build time by next/font — no render-blocking request to
+   fonts.googleapis.com, no layout shift, and the files are served from our
+   own origin with immutable caching. Weights match the v1 <link> exactly. */
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['700', '800', '900'],
+  variable: '--font-poppins',
+  display: 'swap',
+})
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-manrope',
+  display: 'swap',
+})
 
 export const metadata = {
   metadataBase: new URL('https://stillloud.in'),
@@ -33,25 +51,74 @@ export const viewport = {
   initialScale: 1,
 }
 
+const SITE = 'https://stillloud.in'
+
 const organizationSchema = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'StillLoud',
-  email: 'team.stillloud@gmail.com',
-  sameAs: ['https://instagram.com/wearestillloud'],
+  '@graph': [
+    {
+      '@type': ['Organization', 'ProfessionalService'],
+      '@id': `${SITE}/#organization`,
+      name: 'StillLoud',
+      alternateName: 'stillLoud',
+      url: SITE,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${SITE}/assets/fulllogo.svg`,
+      },
+      image: `${SITE}/assets/fulllogo.svg`,
+      description:
+        'StillLoud is a branding and creative design studio in India helping small businesses grow through strategic brand identity, logo design, social media creatives, website design and UI/UX.',
+      email: 'team.stillloud@gmail.com',
+      telephone: '+91-6351139179',
+      address: {
+        '@type': 'PostalAddress',
+        addressCountry: 'IN',
+      },
+      areaServed: [
+        { '@type': 'Country', name: 'India' },
+        { '@type': 'Place', name: 'Worldwide (remote)' },
+      ],
+      contactPoint: [
+        {
+          '@type': 'ContactPoint',
+          contactType: 'sales',
+          telephone: '+91-6351139179',
+          email: 'team.stillloud@gmail.com',
+          availableLanguage: ['en', 'hi'],
+        },
+      ],
+      sameAs: [
+        'https://instagram.com/wearestillloud',
+        'https://www.linkedin.com/company/stillloud/',
+        'https://in.pinterest.com/wearestillloud/',
+      ],
+      knowsAbout: [
+        'Brand strategy',
+        'Brand identity',
+        'Logo design',
+        'Social media design',
+        'Website design',
+        'UI/UX design',
+      ],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE}/#website`,
+      url: SITE,
+      name: 'StillLoud',
+      description:
+        'Branding, website design and social media creatives for small businesses.',
+      publisher: { '@id': `${SITE}/#organization` },
+      inLanguage: 'en-IN',
+    },
+  ],
 }
 
 export default function FrontendLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${poppins.variable} ${manrope.variable}`}>
       <head>
-        {/* Google Fonts: Poppins (Heading/Hero) & Manrope (Body/UI) */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Poppins:wght@700;800;900&display=swap"
-          rel="stylesheet"
-        />
         {/* FontAwesome Icons */}
         <link
           rel="stylesheet"

@@ -5,6 +5,13 @@ import { buildConfig } from 'payload'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
+import { Categories } from './collections/Categories.js'
+import { Media } from './collections/Media.js'
+import { Pages } from './collections/Pages.js'
+import { Posts } from './collections/Posts.js'
+import { Projects } from './collections/Projects.js'
+import { Redirects } from './collections/Redirects.js'
+import { Testimonials } from './collections/Testimonials.js'
 import { Users } from './collections/Users.js'
 
 const filename = fileURLToPath(import.meta.url)
@@ -21,7 +28,7 @@ export default buildConfig({
     },
   },
 
-  collections: [Users],
+  collections: [Users, Media, Pages, Posts, Categories, Projects, Testimonials, Redirects],
 
   editor: lexicalEditor(),
 
