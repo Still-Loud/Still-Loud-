@@ -1,0 +1,489 @@
+/* 
+   ARSCREA CSS Stylesheet (v2 Redesign)
+   Responsive media queries
+*/
+
+@media (max-width: 1024px) {
+  /* Navbar tablet adjustments */
+  .nav-links {
+    gap: 20px;
+  }
+
+  .nav-cta {
+    padding: 9px 20px;
+    font-size: 0.75rem;
+  }
+
+  /* Common spacing adjustments */
+  .about-section,
+  .services-section,
+  .portfolio-section,
+  .testimonials-section,
+  .pricing-section {
+    padding: 80px 0;
+  }
+
+  /* Hero adjustments */
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    text-align: center;
+  }
+
+  .hero-left {
+    align-items: center;
+  }
+
+  .hero-headline {
+    font-size: clamp(3rem, 8vw, 4.5rem);
+  }
+
+  /* About adjustments */
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .col-left, .col-right {
+    margin: 0;
+  }
+
+  /* Services adjustments */
+  .services-grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .services-center {
+    order: 3;
+    max-width: 450px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .services-right {
+    order: 2;
+  }
+
+  /* Service buttons — keep 2 cols but tighten padding slightly */
+  .services-pills {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .service-pill {
+    padding: 16px 22px;
+    font-size: 1rem;
+    min-height: 60px;
+  }
+
+  /* Portfolio adjustments */
+  .portfolio-grid {
+    gap: 24px;
+  }
+
+  /* Pricing adjustments */
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    max-width: 450px;
+    margin: 0 auto;
+    gap: 36px;
+  }
+
+  .pricing-card.active {
+    transform: none;
+  }
+
+  .pricing-card.active:hover {
+    transform: translateY(-8px);
+  }
+
+  .d-slash {
+    font-size: 2.2rem;
+  }
+  
+  .d-num {
+    font-size: 1.8rem;
+  }
+
+  /* Footer adjustments */
+  .footer-cols {
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+
+  .col-brand {
+    grid-column: span 2;
+  }
+
+  /* Testimonials: 2 cards visible on tablet */
+  .testimonial-card {
+    flex: 0 0 calc(50% - 15px);
+  }
+
+  .testimonial-nav-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  /* ── Fix horizontal overflow / black left strip ── */
+  html,
+  body {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  /* Logo Swap */
+  .desktop-logo {
+    opacity: 0;
+    width: 0;
+    pointer-events: none;
+  }
+
+  .mobile-logo {
+    position: relative;
+    left: 0;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ── Remove left strip: flush card edges, clip overflow ── */
+  .top-hero-card {
+    margin: 0;
+    padding: 16px 12px;
+    border-radius: 0 0 24px 24px;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    /* clip anything that bleeds past the card edge */
+    overflow: hidden;
+  }
+
+  /* Disable transform on wrapper so it doesn't trap fixed elements */
+  .navbar-wrapper {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .navbar {
+    padding: 7px 12px 7px 14px;
+    border-radius: 999px;
+  }
+
+  /* Shrink the logo on phones */
+  .nav-logo {
+    height: 30px;
+  }
+
+  .nav-links {
+    gap: 16px;
+  }
+
+  .nav-links a {
+    font-size: 0.75rem;
+  }
+
+  .nav-cta {
+    padding: 8px 18px;
+    font-size: 0.72rem;
+  }
+
+  /* Hamburger navigation menu */
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  /* ── Mobile nav drawer — scoped to viewport, not body ── */
+  .nav-container {
+    position: fixed;
+    top: 0;
+    /* Start offscreen to the LEFT but clipped by viewport, not body */
+    left: -100vw;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--color-dark);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: var(--transition-smooth);
+    z-index: 1000;
+  }
+
+  .nav-container.active {
+    left: 0;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+    text-align: center;
+    padding: 40px;
+  }
+
+  .nav-links li {
+    animation: none;
+  }
+
+  .nav-links a {
+    font-size: 1.5rem;
+  }
+
+  /* Hide CTA in navbar on mobile, show inside mobile menu instead */
+  .nav-cta {
+    display: none;
+  }
+
+  /* Mobile CTA inside drawer */
+  .nav-container.active ~ .nav-cta-mobile {
+    display: inline-flex;
+  }
+
+  /* ── Hero: stacked layout with buttons BELOW the illustration ── */
+  .hero-section {
+    padding: 32px 16px 40px;
+  }
+
+  .hero-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0; /* controlled per-element below */
+  }
+
+  /* hero-left becomes a flex column; its children are reordered */
+  .hero-left {
+    display: contents; /* dissolve the wrapper so children join the grid flow */
+  }
+
+  /* JOIN US badge — stays at the very top */
+  .join-us-btn {
+    order: 1;
+    align-self: center;
+    margin-bottom: 16px;
+  }
+
+  /* Big headline — just below the badge */
+  .hero-headline {
+    font-size: clamp(2.5rem, 9vw, 3.4rem);
+    order: 2;
+    text-align: center;
+    margin-bottom: 0; /* remove gap — illustration provides visual break */
+  }
+
+  /* Illustration — sits between headline and buttons */
+  .hero-right {
+    order: 3;
+    width: 100%;
+    margin: 12px 0 0;
+  }
+
+  .hero-illustration-img {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .nav-spacer {
+    display: none;
+  }
+
+  /* CTA pill buttons — pushed BELOW the illustration */
+  .hero-actions-pill {
+    order: 4;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-radius: 20px;
+    padding: 6px;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .btn-portfolio-pill,
+  .btn-contact-pill {
+    width: 100%;
+    text-align: center;
+    padding: 14px 20px;
+  }
+
+  /* About adjustments */
+  .about-visuals {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .about-img-card {
+    height: 380px;
+  }
+
+  .about-stat-card {
+    height: 120px;
+  }
+
+  .about-features {
+    grid-template-columns: 1fr;
+  }
+
+  /* Service buttons — full width single column on mobile */
+  .services-pills {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .service-pill {
+    min-height: 56px;
+    padding: 16px 24px;
+    font-size: 1rem;
+    border-radius: 14px;
+  }
+
+  /* Portfolio adjustments */
+  .portfolio-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .portfolio-card-img {
+    aspect-ratio: 4/3;
+  }
+
+  .portfolio-carousel-wrapper {
+    padding: 0 16px;
+  }
+
+  .carousel-nav-btn {
+    width: 48px;
+    height: 48px;
+  }
+
+  .prev-btn {
+    left: -10px;
+  }
+
+  .next-btn {
+    right: -10px;
+  }
+
+  .portfolio-footer {
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  /* Testimonials: 1 card visible on mobile */
+  .testimonials-carousel-wrapper {
+    gap: 12px;
+  }
+
+  .testimonials-viewport {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .testimonial-card {
+    flex: 0 0 calc(100% - 0px);
+    padding: 24px 20px;
+  }
+
+  /* Make header elements wrap gracefully on very small screens */
+  .testimonial-card-header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .author-info-wrapper {
+    width: 100%;
+  }
+
+  .logo-container {
+    width: 45px;
+    height: 45px;
+  }
+
+  .testimonial-nav-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 0.85rem;
+  }
+
+  .testimonial-text {
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  /* Footer adjustments */
+  .footer-upper {
+    flex-direction: column;
+    gap: 24px;
+    text-align: center;
+  }
+
+  .footer-upper-btn-wrap {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .btn-hire-us, .btn-schedule {
+    width: 100%;
+  }
+
+  .cta-btn-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .cta-btn-group .btn,
+  .ow-cta-btn-group .ow-cta-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .ow-cta-btn-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .footer-cols {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .col-brand {
+    grid-column: span 1;
+  }
+}
+
+/* ── Extra-small phones: 320px – 480px ── */
+@media (max-width: 480px) {
+  .top-hero-card {
+    margin: 0;
+    padding: 12px 8px;
+    border-radius: 0 0 16px 16px;
+  }
+
+  .hero-section {
+    padding: 24px 12px 36px;
+  }
+
+  .hero-headline {
+    font-size: clamp(2.2rem, 10vw, 3rem);
+  }
+
+  .join-us-btn {
+    font-size: 0.75rem;
+    padding: 7px 14px;
+  }
+
+  .hero-actions-pill {
+    margin-top: 16px;
+    border-radius: 16px;
+  }
+
+  .btn-portfolio-pill,
+  .btn-contact-pill {
+    padding: 13px 16px;
+    font-size: 0.82rem;
+  }
+}

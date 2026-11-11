@@ -1,0 +1,517 @@
+{
+  "generatedAt": "2026-11-11T17:26:16.630Z",
+  "source": "C:\\Users\\Shubhan yadav\\OneDrive\\Desktop\\arc\\v1\\still-loud-web",
+  "routes": [
+    {
+      "url": "/",
+      "file": "index.html",
+      "title": "StillLoud | Branding, Website Design & Creative Studio",
+      "sections": [
+        {
+          "id": "home",
+          "cls": "hero-section"
+        },
+        {
+          "id": "about",
+          "cls": "about-section"
+        },
+        {
+          "id": "services",
+          "cls": "services-section"
+        },
+        {
+          "id": "work",
+          "cls": "portfolio-section"
+        },
+        {
+          "id": "reviews",
+          "cls": "testimonials-section"
+        },
+        {
+          "id": null,
+          "cls": "marquee-section"
+        },
+        {
+          "id": "pricing",
+          "cls": "pricing-section"
+        }
+      ]
+    },
+    {
+      "url": "/our-work.html",
+      "file": "our-work.html",
+      "title": "Our Work | StillLoud Portfolio",
+      "sections": [
+        "Our Work hero",
+        "Featured case study",
+        "Filter tabs",
+        "Gallery (48 cards)",
+        "Lightbox",
+        "CTA",
+        "Footer"
+      ]
+    },
+    {
+      "url": "/404.html",
+      "file": "404.html",
+      "title": "404 - Page Not Found",
+      "sections": []
+    }
+  ],
+  "anchors": [
+    "home",
+    "about",
+    "services",
+    "reviews",
+    "contact"
+  ],
+  "counts": {
+    "html": 3,
+    "css": 3,
+    "js": 2,
+    "assets": 66,
+    "assetsUsed": 55,
+    "assetsUnused": 11,
+    "totalAssetMB": 109.6,
+    "unusedAssetMB": 26.5,
+    "galleryCards": 48,
+    "imgTags": 58,
+    "videoTags": 12,
+    "srcsetAttrs": 0,
+    "widthHeightAttrs": 0,
+    "lazyAttrs": 43,
+    "forms": 0
+  },
+  "integrations": [
+    {
+      "name": "Google Tag Manager",
+      "id": "GTM-M4KFX8KF",
+      "type": "analytics",
+      "pages": [
+        "index",
+        "our-work",
+        "404"
+      ]
+    },
+    {
+      "name": "Google Analytics 4",
+      "id": "G-35L8G4ZZBE",
+      "type": "analytics",
+      "pages": [
+        "index",
+        "our-work"
+      ]
+    },
+    {
+      "name": "Tawk.to live chat",
+      "id": "6a50a992a6558f1d451fe2fa/1jt5hcpjs",
+      "type": "chat",
+      "pages": [
+        "index"
+      ]
+    },
+    {
+      "name": "Pinterest site verification",
+      "id": "1b63087bd2df1cd9a3970c29069d5872",
+      "type": "verification",
+      "pages": [
+        "index",
+        "our-work"
+      ]
+    },
+    {
+      "name": "Google Search Console verification",
+      "id": "6RRXaTkZvHy-WpPjVwNahqLwI9GJXORKH29Aqt2O5xc",
+      "type": "verification",
+      "pages": [
+        "index",
+        "our-work"
+      ]
+    },
+    {
+      "name": "Cloudinary (Kubes)",
+      "id": "res.cloudinary.com/n4d0qen2",
+      "type": "video-host",
+      "pages": [
+        "our-work"
+      ]
+    },
+    {
+      "name": "Cloudinary (reels)",
+      "id": "res.cloudinary.com/tebtzfn8",
+      "type": "video-host",
+      "pages": [
+        "our-work"
+      ]
+    },
+    {
+      "name": "Calendly",
+      "id": "calendly.com/team-stillloud/30min",
+      "type": "booking",
+      "pages": [
+        "index",
+        "our-work"
+      ]
+    },
+    {
+      "name": "WhatsApp",
+      "id": "wa.me/8866119607, wa.me/6351139179",
+      "type": "contact",
+      "pages": [
+        "index",
+        "our-work"
+      ]
+    },
+    {
+      "name": "Google Fonts",
+      "id": "Poppins 700-900 + Manrope 400-800",
+      "type": "fonts",
+      "pages": [
+        "index",
+        "our-work",
+        "404"
+      ]
+    },
+    {
+      "name": "FontAwesome 6.4.0 CDN",
+      "id": "cdnjs.cloudflare.com",
+      "type": "icons",
+      "pages": [
+        "index",
+        "our-work"
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "path": "assets/BG_only.svg",
+      "kb": 15128,
+      "used": false
+    },
+    {
+      "path": "assets/Testemonial_Logos/mahakali-industries-logo.png",
+      "kb": 14663,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Creatives/pin_52072939437629503.png",
+      "kb": 10096,
+      "used": true
+    },
+    {
+      "path": "assets/1.svg",
+      "kb": 7169,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Printables/Main.png",
+      "kb": 4855,
+      "used": true
+    },
+    {
+      "path": "assets/3.svg",
+      "kb": 4428,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Creatives/1.png",
+      "kb": 3278,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Printables/12.png",
+      "kb": 2657,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Printables/1.png",
+      "kb": 2613,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Reel Cover/4.svg",
+      "kb": 2582,
+      "used": false
+    },
+    {
+      "path": "assets/OUR WORK page/Logos/4.png",
+      "kb": 2532,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Reel Cover/6.svg",
+      "kb": 2451,
+      "used": false
+    },
+    {
+      "path": "assets/OUR WORK page/Printables/9.png",
+      "kb": 2356,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Reel Cover/5.svg",
+      "kb": 2126,
+      "used": false
+    },
+    {
+      "path": "assets/OUR WORK page/Printables/3.png",
+      "kb": 2072,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Reel Cover/2.svg",
+      "kb": 2015,
+      "used": false
+    },
+    {
+      "path": "assets/OUR WORK page/Reel Cover/1.svg",
+      "kb": 1990,
+      "used": false
+    },
+    {
+      "path": "assets/OUR WORK page/Printables/6.png",
+      "kb": 1989,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Printables/7.png",
+      "kb": 1704,
+      "used": true
+    },
+    {
+      "path": "assets/FrontPage design.svg",
+      "kb": 1650,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Creatives/pin_1407443630816269.png",
+      "kb": 1539,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Creatives/Arscrea !_ August.jpg",
+      "kb": 1537,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Printables/5.png",
+      "kb": 1438,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Logos/1.png",
+      "kb": 1325,
+      "used": true
+    },
+    {
+      "path": "assets/5.svg",
+      "kb": 1210,
+      "used": true
+    },
+    {
+      "path": "assets/Brain.svg",
+      "kb": 1132,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Creatives/Veyron Estates.jpg",
+      "kb": 1079,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Printables/11.png",
+      "kb": 1034,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Printables/4.png",
+      "kb": 1011,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Logos/2.png",
+      "kb": 938,
+      "used": true
+    },
+    {
+      "path": "assets/Testemonial_Logos/Kubes 1.png",
+      "kb": 916,
+      "used": true
+    },
+    {
+      "path": "assets/bg_only.png",
+      "kb": 879,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Printables/8.png",
+      "kb": 861,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Reel Cover/3.svg",
+      "kb": 680,
+      "used": false
+    },
+    {
+      "path": "assets/Packages/3.svg",
+      "kb": 655,
+      "used": true
+    },
+    {
+      "path": "assets/Packages/2.svg",
+      "kb": 653,
+      "used": true
+    },
+    {
+      "path": "assets/handshakes.svg",
+      "kb": 635,
+      "used": true
+    },
+    {
+      "path": "assets/Packages/1.svg",
+      "kb": 623,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Printables/2.png",
+      "kb": 580,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Logos/3.png",
+      "kb": 498,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Creatives/icecream.png",
+      "kb": 468,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Printables/10.png",
+      "kb": 445,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Creatives/krestoniks.jpg",
+      "kb": 437,
+      "used": true
+    },
+    {
+      "path": "assets/Testemonial_Logos/Wllcraft_Logo.ico",
+      "kb": 401,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Creatives/3 lights.jpg",
+      "kb": 368,
+      "used": true
+    },
+    {
+      "path": "assets/Testemonial_Logos/SIRAMANI CAMPS LOGO.jpg",
+      "kb": 348,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Logos/9.png",
+      "kb": 296,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Logos/7.png",
+      "kb": 279,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Creatives/client needs.png",
+      "kb": 200,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Creatives/pin_2392606048805945.jpg",
+      "kb": 199,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Logos/5.png",
+      "kb": 163,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Creatives/kubes janmashtami.jpg",
+      "kb": 144,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Logos/6.png",
+      "kb": 143,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Creatives/wllcraft.jpg",
+      "kb": 136,
+      "used": true
+    },
+    {
+      "path": "assets/Testemonial_Logos/Wllcraft_Logo.jpg",
+      "kb": 124,
+      "used": false
+    },
+    {
+      "path": "assets/OUR WORK page/Logos/8.png",
+      "kb": 100,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Creatives/Food social media post design _ Restaurant Menu creative ads.jpg",
+      "kb": 96,
+      "used": true
+    },
+    {
+      "path": "assets/Testemonial_Logos/Denory .jpg",
+      "kb": 75,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Creatives/kubes bhaidooj.jpg",
+      "kb": 63,
+      "used": true
+    },
+    {
+      "path": "assets/OUR WORK page/Creatives/chicken burger.jpg",
+      "kb": 62,
+      "used": true
+    },
+    {
+      "path": "assets/reel.png",
+      "kb": 32,
+      "used": false
+    },
+    {
+      "path": "assets/Testemonial_Logos/Glowframezy.jpg",
+      "kb": 28,
+      "used": false
+    },
+    {
+      "path": "assets/whatsapp.png",
+      "kb": 23,
+      "used": false
+    },
+    {
+      "path": "assets/Testemonial_Logos/cardexia.jpg",
+      "kb": 9,
+      "used": true
+    },
+    {
+      "path": "assets/fulllogo.svg",
+      "kb": 5,
+      "used": true
+    },
+    {
+      "path": "assets/logo.svg",
+      "kb": 1,
+      "used": true
+    }
+  ]
+}

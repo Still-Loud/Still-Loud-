@@ -1,0 +1,29 @@
+# Migration Decision Log
+
+Defaults agreed before code, recorded so later steps don't silently drift.
+
+| ID | Decision | Choice | Why | Reversible? |
+|---|---|---|---|---|
+| D1 | Route shape | `/` single page (all anchors) + `/our-work` + `/blog/*` | Real site has only 2 URLs. Splitting About/Services/Contact creates unranked URLs and requires new layouts, violating the no-redesign rule. | Hard later — URL changes cost rankings |
+| D2 | Portfolio URL | 301 `/our-work.html` → `/our-work` | Preserves every existing backlink and indexed URL; clean path. | Yes (drop the redirect) |
+| D3 | CMS coverage | Add `Projects` + `Testimonials` collections | 48 gallery items and 6 testimonials are hardcoded; without collections the client can never update their own portfolio. | Yes |
+| D4 | Media storage | Vercel Blob for uploads; keep Cloudinary URLs for existing video embeds | Payload has a first-class Blob adapter, no first-class Cloudinary adapter. Cloudinary is used only for video hosting today. | Yes, with a storage adapter swap |
+| D5 | `Pages` collection | Fixed field groups per section, max-length validation, no block builder | Prevents arbitrary layout edits that would break the preserved design. | Yes |
+| D6 | Tawk.to chat | Keep, load on first user interaction | Live-chat widget is the largest INP risk on the page. Appearance unchanged; only load timing moves. | Yes |
+| D7 | Branding filter | Fix: `branding` should match branding **and** logo cards | Currently `data-category="branding"` matches zero cards, so the tab silently shows only logos. | Yes |
+| D8 | Reel poster frames | **OPEN** — use the 6 unused `Reel Cover/*.svg` as `poster` | Reel cards currently render as empty black boxes until clicked. Posters improve first paint but change what is displayed today. | Yes |
+
+## Version pins
+
+| Package | Pin | Reason |
+|---|---|---|
+| `payload` | 3.93.0 | Current stable |
+| `@payloadcms/*` | 3.93.0 | Must match `payload` exactly (peer deps) |
+| `next` | 16.4.6 | Within `@payloadcms/next` peer range (`>=16.3.3 <17`) |
+| `react` / `react-dom` | **19.2.x** | `@payloadcms/richtext-lexical` peers are `^19.0.1 \|\| ^19.1.2 \|\| ^19.2.1` — npm `latest` (19.3.1) is **outside** range |
+
+## Open questions for the client
+
+1. Ownership of both Cloudinary accounts (`n4d0qen2`, `tebtzfn8`).
+2. Is the absence of any contact form intentional? All conversion is external links today.
+3. Google Analytics 4 (`G-35L8G4ZZBE`) and GTM (`GTM-M4KFX8KF`) — keep both, or consolidate to GTM only?

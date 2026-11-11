@@ -1,0 +1,925 @@
+{
+  "generatedAt": "2026-11-11T17:23:12.569Z",
+  "base": "http://127.0.0.1:8123",
+  "pages": {
+    "404": {
+      "url": "/404.html",
+      "viewports": {
+        "desktop-1440": {
+          "name": "desktop-1440",
+          "width": 1440,
+          "height": 900,
+          "screenshot": "screenshots/404-desktop-1440.png",
+          "metrics": {
+            "documentHeight": 900,
+            "documentWidth": 1440,
+            "horizontalOverflow": false,
+            "domNodes": 28,
+            "images": 0,
+            "imagesMissingDimensions": 0,
+            "videos": 0,
+            "requestCount": 3,
+            "transferKB": 2,
+            "decodedKB": 14,
+            "byInitiator": {
+              "link": {
+                "count": 1,
+                "kb": 1
+              },
+              "script": {
+                "count": 1,
+                "kb": 0
+              },
+              "other": {
+                "count": 1,
+                "kb": 1
+              }
+            },
+            "heaviest": []
+          }
+        },
+        "laptop-1024": {
+          "name": "laptop-1024",
+          "width": 1024,
+          "height": 768,
+          "screenshot": "screenshots/404-laptop-1024.png",
+          "metrics": {
+            "documentHeight": 768,
+            "documentWidth": 1024,
+            "horizontalOverflow": false,
+            "domNodes": 28,
+            "images": 0,
+            "imagesMissingDimensions": 0,
+            "videos": 0,
+            "requestCount": 2,
+            "transferKB": 1,
+            "decodedKB": 14,
+            "byInitiator": {
+              "link": {
+                "count": 1,
+                "kb": 1
+              },
+              "script": {
+                "count": 1,
+                "kb": 0
+              }
+            },
+            "heaviest": []
+          }
+        },
+        "tablet-768": {
+          "name": "tablet-768",
+          "width": 768,
+          "height": 1024,
+          "screenshot": "screenshots/404-tablet-768.png",
+          "metrics": {
+            "documentHeight": 1024,
+            "documentWidth": 768,
+            "horizontalOverflow": false,
+            "domNodes": 28,
+            "images": 0,
+            "imagesMissingDimensions": 0,
+            "videos": 0,
+            "requestCount": 2,
+            "transferKB": 1,
+            "decodedKB": 14,
+            "byInitiator": {
+              "link": {
+                "count": 1,
+                "kb": 1
+              },
+              "script": {
+                "count": 1,
+                "kb": 0
+              }
+            },
+            "heaviest": []
+          }
+        },
+        "mobile-390": {
+          "name": "mobile-390",
+          "width": 390,
+          "height": 844,
+          "screenshot": "screenshots/404-mobile-390.png",
+          "metrics": {
+            "documentHeight": 844,
+            "documentWidth": 390,
+            "horizontalOverflow": false,
+            "domNodes": 28,
+            "images": 0,
+            "imagesMissingDimensions": 0,
+            "videos": 0,
+            "requestCount": 2,
+            "transferKB": 1,
+            "decodedKB": 14,
+            "byInitiator": {
+              "link": {
+                "count": 1,
+                "kb": 1
+              },
+              "script": {
+                "count": 1,
+                "kb": 0
+              }
+            },
+            "heaviest": []
+          }
+        }
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (File not found)"
+      ],
+      "failedRequests": []
+    },
+    "home": {
+      "url": "/",
+      "viewports": {
+        "desktop-1440": {
+          "name": "desktop-1440",
+          "width": 1440,
+          "height": 900,
+          "screenshot": "screenshots/home-desktop-1440.png",
+          "metrics": {
+            "documentHeight": 6349,
+            "documentWidth": 1440,
+            "horizontalOverflow": false,
+            "domNodes": 531,
+            "images": 23,
+            "imagesMissingDimensions": 0,
+            "videos": 0,
+            "requestCount": 30,
+            "transferKB": 34662,
+            "decodedKB": 34749,
+            "byInitiator": {
+              "script": {
+                "count": 5,
+                "kb": 11
+              },
+              "link": {
+                "count": 4,
+                "kb": 71
+              },
+              "img": {
+                "count": 17,
+                "kb": 34578
+              },
+              "css": {
+                "count": 1,
+                "kb": 1
+              },
+              "fetch": {
+                "count": 2,
+                "kb": 0
+              },
+              "other": {
+                "count": 1,
+                "kb": 1
+              }
+            },
+            "heaviest": [
+              {
+                "url": "Testemonial_Logos/mahakali-industries-logo.png",
+                "kb": 14663
+              },
+              {
+                "url": "assets/1.svg",
+                "kb": 7169
+              },
+              {
+                "url": "assets/3.svg",
+                "kb": 4428
+              },
+              {
+                "url": "assets/FrontPage%20design.svg",
+                "kb": 1650
+              },
+              {
+                "url": "assets/5.svg",
+                "kb": 1210
+              },
+              {
+                "url": "assets/Brain.svg",
+                "kb": 1132
+              },
+              {
+                "url": "Testemonial_Logos/Kubes%201.png",
+                "kb": 916
+              },
+              {
+                "url": "Packages/3.svg",
+                "kb": 655
+              },
+              {
+                "url": "Packages/2.svg",
+                "kb": 653
+              },
+              {
+                "url": "assets/handshakes.svg",
+                "kb": 635
+              },
+              {
+                "url": "Packages/1.svg",
+                "kb": 623
+              },
+              {
+                "url": "Testemonial_Logos/Wllcraft_Logo.ico",
+                "kb": 401
+              }
+            ]
+          }
+        },
+        "laptop-1024": {
+          "name": "laptop-1024",
+          "width": 1024,
+          "height": 768,
+          "screenshot": "screenshots/home-laptop-1024.png",
+          "metrics": {
+            "documentHeight": 9679,
+            "documentWidth": 1024,
+            "horizontalOverflow": false,
+            "domNodes": 496,
+            "images": 21,
+            "imagesMissingDimensions": 2,
+            "videos": 0,
+            "requestCount": 26,
+            "transferKB": 34237,
+            "decodedKB": 34325,
+            "byInitiator": {
+              "script": {
+                "count": 4,
+                "kb": 11
+              },
+              "link": {
+                "count": 4,
+                "kb": 71
+              },
+              "img": {
+                "count": 15,
+                "kb": 34154
+              },
+              "css": {
+                "count": 1,
+                "kb": 1
+              },
+              "fetch": {
+                "count": 2,
+                "kb": 0
+              }
+            },
+            "heaviest": [
+              {
+                "url": "Testemonial_Logos/mahakali-industries-logo.png",
+                "kb": 14663
+              },
+              {
+                "url": "assets/1.svg",
+                "kb": 7169
+              },
+              {
+                "url": "assets/3.svg",
+                "kb": 4428
+              },
+              {
+                "url": "assets/FrontPage%20design.svg",
+                "kb": 1650
+              },
+              {
+                "url": "assets/5.svg",
+                "kb": 1210
+              },
+              {
+                "url": "assets/Brain.svg",
+                "kb": 1132
+              },
+              {
+                "url": "Testemonial_Logos/Kubes%201.png",
+                "kb": 916
+              },
+              {
+                "url": "Packages/3.svg",
+                "kb": 655
+              },
+              {
+                "url": "Packages/2.svg",
+                "kb": 653
+              },
+              {
+                "url": "assets/handshakes.svg",
+                "kb": 635
+              },
+              {
+                "url": "Packages/1.svg",
+                "kb": 623
+              },
+              {
+                "url": "Testemonial_Logos/Wllcraft_Logo.ico",
+                "kb": 401
+              }
+            ]
+          }
+        },
+        "tablet-768": {
+          "name": "tablet-768",
+          "width": 768,
+          "height": 1024,
+          "screenshot": "screenshots/home-tablet-768.png",
+          "metrics": {
+            "documentHeight": 11347,
+            "documentWidth": 768,
+            "horizontalOverflow": false,
+            "domNodes": 462,
+            "images": 19,
+            "imagesMissingDimensions": 3,
+            "videos": 0,
+            "requestCount": 31,
+            "transferKB": 19573,
+            "decodedKB": 19662,
+            "byInitiator": {
+              "script": {
+                "count": 4,
+                "kb": 11
+              },
+              "link": {
+                "count": 4,
+                "kb": 71
+              },
+              "img": {
+                "count": 20,
+                "kb": 19491
+              },
+              "css": {
+                "count": 1,
+                "kb": 1
+              },
+              "fetch": {
+                "count": 2,
+                "kb": 0
+              }
+            },
+            "heaviest": [
+              {
+                "url": "assets/1.svg",
+                "kb": 7169
+              },
+              {
+                "url": "assets/3.svg",
+                "kb": 4428
+              },
+              {
+                "url": "assets/FrontPage%20design.svg",
+                "kb": 1650
+              },
+              {
+                "url": "assets/5.svg",
+                "kb": 1210
+              },
+              {
+                "url": "assets/Brain.svg",
+                "kb": 1132
+              },
+              {
+                "url": "Testemonial_Logos/Kubes%201.png",
+                "kb": 916
+              },
+              {
+                "url": "Packages/3.svg",
+                "kb": 655
+              },
+              {
+                "url": "Packages/2.svg",
+                "kb": 653
+              },
+              {
+                "url": "assets/handshakes.svg",
+                "kb": 635
+              },
+              {
+                "url": "Packages/1.svg",
+                "kb": 623
+              },
+              {
+                "url": "Testemonial_Logos/Wllcraft_Logo.ico",
+                "kb": 401
+              }
+            ]
+          }
+        },
+        "mobile-390": {
+          "name": "mobile-390",
+          "width": 390,
+          "height": 844,
+          "screenshot": "screenshots/home-mobile-390.png",
+          "metrics": {
+            "documentHeight": 10558,
+            "documentWidth": 390,
+            "horizontalOverflow": false,
+            "domNodes": 463,
+            "images": 19,
+            "imagesMissingDimensions": 1,
+            "videos": 0,
+            "requestCount": 28,
+            "transferKB": 19997,
+            "decodedKB": 20085,
+            "byInitiator": {
+              "script": {
+                "count": 5,
+                "kb": 11
+              },
+              "link": {
+                "count": 4,
+                "kb": 71
+              },
+              "img": {
+                "count": 16,
+                "kb": 19915
+              },
+              "css": {
+                "count": 1,
+                "kb": 1
+              },
+              "fetch": {
+                "count": 2,
+                "kb": 0
+              }
+            },
+            "heaviest": [
+              {
+                "url": "assets/1.svg",
+                "kb": 7169
+              },
+              {
+                "url": "assets/3.svg",
+                "kb": 4428
+              },
+              {
+                "url": "assets/FrontPage%20design.svg",
+                "kb": 1650
+              },
+              {
+                "url": "assets/5.svg",
+                "kb": 1210
+              },
+              {
+                "url": "assets/Brain.svg",
+                "kb": 1132
+              },
+              {
+                "url": "Testemonial_Logos/Kubes%201.png",
+                "kb": 916
+              },
+              {
+                "url": "Packages/3.svg",
+                "kb": 655
+              },
+              {
+                "url": "Packages/2.svg",
+                "kb": 653
+              },
+              {
+                "url": "assets/handshakes.svg",
+                "kb": 635
+              },
+              {
+                "url": "Packages/1.svg",
+                "kb": 623
+              },
+              {
+                "url": "Testemonial_Logos/Wllcraft_Logo.ico",
+                "kb": 401
+              },
+              {
+                "url": "Testemonial_Logos/SIRAMANI%20CAMPS%20LOGO.jpg",
+                "kb": 348
+              }
+            ]
+          }
+        }
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (File not found)",
+        "Access to script at 'https://embed.tawk.to/6a50a992a6558f1d451fe2fa/1jt5hcpjs' from origin 'http://127.0.0.1:8123' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to load resource: the server responded with a status of 404 (File not found)",
+        "Access to script at 'https://embed.tawk.to/6a50a992a6558f1d451fe2fa/1jt5hcpjs' from origin 'http://127.0.0.1:8123' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to load resource: the server responded with a status of 404 (File not found)",
+        "Access to script at 'https://embed.tawk.to/6a50a992a6558f1d451fe2fa/1jt5hcpjs' from origin 'http://127.0.0.1:8123' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to load resource: the server responded with a status of 404 (File not found)",
+        "Access to script at 'https://embed.tawk.to/6a50a992a6558f1d451fe2fa/1jt5hcpjs' from origin 'http://127.0.0.1:8123' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "failedRequests": [
+        {
+          "url": "https://embed.tawk.to/6a50a992a6558f1d451fe2fa/1jt5hcpjs",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "https://embed.tawk.to/6a50a992a6558f1d451fe2fa/1jt5hcpjs",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "https://embed.tawk.to/6a50a992a6558f1d451fe2fa/1jt5hcpjs",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "https://embed.tawk.to/6a50a992a6558f1d451fe2fa/1jt5hcpjs",
+          "error": "net::ERR_FAILED"
+        }
+      ]
+    },
+    "our-work": {
+      "url": "/our-work.html",
+      "viewports": {
+        "desktop-1440": {
+          "name": "desktop-1440",
+          "width": 1440,
+          "height": 900,
+          "screenshot": "screenshots/our-work-desktop-1440.png",
+          "metrics": {
+            "documentHeight": 7425,
+            "documentWidth": 1440,
+            "horizontalOverflow": false,
+            "domNodes": 492,
+            "images": 41,
+            "imagesMissingDimensions": 1,
+            "videos": 12,
+            "requestCount": 53,
+            "transferKB": 65732,
+            "decodedKB": 65813,
+            "byInitiator": {
+              "script": {
+                "count": 5,
+                "kb": 12
+              },
+              "link": {
+                "count": 5,
+                "kb": 107
+              },
+              "img": {
+                "count": 40,
+                "kb": 50485
+              },
+              "css": {
+                "count": 1,
+                "kb": 15128
+              },
+              "fetch": {
+                "count": 2,
+                "kb": 0
+              }
+            },
+            "heaviest": [
+              {
+                "url": "assets/BG_only.svg",
+                "kb": 15128
+              },
+              {
+                "url": "Creatives/pin_52072939437629503.png",
+                "kb": 10096
+              },
+              {
+                "url": "Printables/Main.png",
+                "kb": 4855
+              },
+              {
+                "url": "Creatives/1.png",
+                "kb": 3278
+              },
+              {
+                "url": "Printables/12.png",
+                "kb": 2657
+              },
+              {
+                "url": "Printables/1.png",
+                "kb": 2613
+              },
+              {
+                "url": "Logos/4.png",
+                "kb": 2532
+              },
+              {
+                "url": "Printables/9.png",
+                "kb": 2356
+              },
+              {
+                "url": "Printables/3.png",
+                "kb": 2072
+              },
+              {
+                "url": "Printables/6.png",
+                "kb": 1989
+              },
+              {
+                "url": "Printables/7.png",
+                "kb": 1704
+              },
+              {
+                "url": "Creatives/pin_1407443630816269.png",
+                "kb": 1539
+              }
+            ]
+          }
+        },
+        "laptop-1024": {
+          "name": "laptop-1024",
+          "width": 1024,
+          "height": 768,
+          "screenshot": "screenshots/our-work-laptop-1024.png",
+          "metrics": {
+            "documentHeight": 8359,
+            "documentWidth": 1024,
+            "horizontalOverflow": false,
+            "domNodes": 492,
+            "images": 41,
+            "imagesMissingDimensions": 7,
+            "videos": 12,
+            "requestCount": 47,
+            "transferKB": 58082,
+            "decodedKB": 58166,
+            "byInitiator": {
+              "script": {
+                "count": 5,
+                "kb": 12
+              },
+              "link": {
+                "count": 5,
+                "kb": 107
+              },
+              "img": {
+                "count": 34,
+                "kb": 42835
+              },
+              "css": {
+                "count": 1,
+                "kb": 15128
+              },
+              "fetch": {
+                "count": 2,
+                "kb": 0
+              }
+            },
+            "heaviest": [
+              {
+                "url": "assets/BG_only.svg",
+                "kb": 15128
+              },
+              {
+                "url": "Creatives/pin_52072939437629503.png",
+                "kb": 10096
+              },
+              {
+                "url": "Printables/Main.png",
+                "kb": 4855
+              },
+              {
+                "url": "Creatives/1.png",
+                "kb": 3278
+              },
+              {
+                "url": "Printables/1.png",
+                "kb": 2613
+              },
+              {
+                "url": "Logos/4.png",
+                "kb": 2532
+              },
+              {
+                "url": "Printables/3.png",
+                "kb": 2072
+              },
+              {
+                "url": "Printables/6.png",
+                "kb": 1989
+              },
+              {
+                "url": "Printables/7.png",
+                "kb": 1704
+              },
+              {
+                "url": "Creatives/pin_1407443630816269.png",
+                "kb": 1539
+              },
+              {
+                "url": "Creatives/Arscrea%20!_%20August.jpg",
+                "kb": 1537
+              },
+              {
+                "url": "Printables/5.png",
+                "kb": 1438
+              }
+            ]
+          }
+        },
+        "tablet-768": {
+          "name": "tablet-768",
+          "width": 768,
+          "height": 1024,
+          "screenshot": "screenshots/our-work-tablet-768.png",
+          "metrics": {
+            "documentHeight": 8221,
+            "documentWidth": 768,
+            "horizontalOverflow": false,
+            "domNodes": 492,
+            "images": 41,
+            "imagesMissingDimensions": 1,
+            "videos": 12,
+            "requestCount": 53,
+            "transferKB": 65732,
+            "decodedKB": 65813,
+            "byInitiator": {
+              "script": {
+                "count": 5,
+                "kb": 12
+              },
+              "link": {
+                "count": 5,
+                "kb": 107
+              },
+              "img": {
+                "count": 40,
+                "kb": 50485
+              },
+              "css": {
+                "count": 1,
+                "kb": 15128
+              },
+              "fetch": {
+                "count": 2,
+                "kb": 0
+              }
+            },
+            "heaviest": [
+              {
+                "url": "assets/BG_only.svg",
+                "kb": 15128
+              },
+              {
+                "url": "Creatives/pin_52072939437629503.png",
+                "kb": 10096
+              },
+              {
+                "url": "Printables/Main.png",
+                "kb": 4855
+              },
+              {
+                "url": "Creatives/1.png",
+                "kb": 3278
+              },
+              {
+                "url": "Printables/12.png",
+                "kb": 2657
+              },
+              {
+                "url": "Printables/1.png",
+                "kb": 2613
+              },
+              {
+                "url": "Logos/4.png",
+                "kb": 2532
+              },
+              {
+                "url": "Printables/9.png",
+                "kb": 2356
+              },
+              {
+                "url": "Printables/3.png",
+                "kb": 2072
+              },
+              {
+                "url": "Printables/6.png",
+                "kb": 1989
+              },
+              {
+                "url": "Printables/7.png",
+                "kb": 1704
+              },
+              {
+                "url": "Creatives/pin_1407443630816269.png",
+                "kb": 1539
+              }
+            ]
+          }
+        },
+        "mobile-390": {
+          "name": "mobile-390",
+          "width": 390,
+          "height": 844,
+          "screenshot": "screenshots/our-work-mobile-390.png",
+          "metrics": {
+            "documentHeight": 8745,
+            "documentWidth": 390,
+            "horizontalOverflow": false,
+            "domNodes": 492,
+            "images": 41,
+            "imagesMissingDimensions": 1,
+            "videos": 12,
+            "requestCount": 53,
+            "transferKB": 65732,
+            "decodedKB": 65813,
+            "byInitiator": {
+              "script": {
+                "count": 5,
+                "kb": 12
+              },
+              "link": {
+                "count": 5,
+                "kb": 107
+              },
+              "img": {
+                "count": 40,
+                "kb": 50485
+              },
+              "css": {
+                "count": 1,
+                "kb": 15128
+              },
+              "fetch": {
+                "count": 2,
+                "kb": 0
+              }
+            },
+            "heaviest": [
+              {
+                "url": "assets/BG_only.svg",
+                "kb": 15128
+              },
+              {
+                "url": "Creatives/pin_52072939437629503.png",
+                "kb": 10096
+              },
+              {
+                "url": "Printables/Main.png",
+                "kb": 4855
+              },
+              {
+                "url": "Creatives/1.png",
+                "kb": 3278
+              },
+              {
+                "url": "Printables/12.png",
+                "kb": 2657
+              },
+              {
+                "url": "Printables/1.png",
+                "kb": 2613
+              },
+              {
+                "url": "Logos/4.png",
+                "kb": 2532
+              },
+              {
+                "url": "Printables/9.png",
+                "kb": 2356
+              },
+              {
+                "url": "Printables/3.png",
+                "kb": 2072
+              },
+              {
+                "url": "Printables/6.png",
+                "kb": 1989
+              },
+              {
+                "url": "Printables/7.png",
+                "kb": 1704
+              },
+              {
+                "url": "Creatives/pin_1407443630816269.png",
+                "kb": 1539
+              }
+            ]
+          }
+        }
+      },
+      "consoleErrors": [
+        "Access to script at 'https://embed.tawk.to/6a50a992a6558f1d451fe2fa/1jt5hcpjs' from origin 'http://127.0.0.1:8123' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+        "Failed to load resource: net::ERR_FAILED",
+        "Access to script at 'https://embed.tawk.to/6a50a992a6558f1d451fe2fa/1jt5hcpjs' from origin 'http://127.0.0.1:8123' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+        "Failed to load resource: net::ERR_FAILED",
+        "Access to script at 'https://embed.tawk.to/6a50a992a6558f1d451fe2fa/1jt5hcpjs' from origin 'http://127.0.0.1:8123' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+        "Failed to load resource: net::ERR_FAILED",
+        "Access to script at 'https://embed.tawk.to/6a50a992a6558f1d451fe2fa/1jt5hcpjs' from origin 'http://127.0.0.1:8123' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "failedRequests": [
+        {
+          "url": "https://embed.tawk.to/6a50a992a6558f1d451fe2fa/1jt5hcpjs",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "https://embed.tawk.to/6a50a992a6558f1d451fe2fa/1jt5hcpjs",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "https://embed.tawk.to/6a50a992a6558f1d451fe2fa/1jt5hcpjs",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "https://embed.tawk.to/6a50a992a6558f1d451fe2fa/1jt5hcpjs",
+          "error": "net::ERR_FAILED"
+        }
+      ]
+    }
+  }
+}
