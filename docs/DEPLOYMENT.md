@@ -90,6 +90,12 @@ Vercel defaults are correct:
 - Build command: `npm run build`
 - Node: 22.x
 
+`npm run build` starts with `scripts/check-env.mjs`, which prints every expected
+variable as `set` or `missing` (never its value) plus the Vercel environment and
+repository. If a required variable is absent it stops immediately with the
+missing names, before Next tries to prerender. Use that list to fix the Vercel
+environment instead of guessing from the Payload error.
+
 `npm run build` also builds Payload's admin bundle. If an admin component or the
 import map changes, run `npm run generate:importmap` first and commit
 `app/(payload)/admin/importMap.js`.

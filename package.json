@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
+    "prebuild": "node scripts/check-env.mjs",
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
@@ -31,6 +32,6 @@
     "sharp": "0.35.5"
   },
   "engines": {
-    "node": ">=20.9.0"
+    "node": "22.x"
   }
 }
