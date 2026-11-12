@@ -200,7 +200,8 @@ verification and rollback.
 Key points:
 
 1. Add the database, Payload and Cloudinary variables (and Brevo when ready) to
-   the hosting project.
+   the hosting project **before** building. Static pages are prerendered with
+   Payload, so `PAYLOAD_SECRET` and `DATABASE_URL` must exist at build time.
 2. Set `NEXT_PUBLIC_SERVER_URL` to the public origin. Invitation links and
    canonical URLs depend on it.
 3. Run `npm run payload -- migrate` on release. Never rely on dev schema push in
