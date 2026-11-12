@@ -285,7 +285,8 @@ Working and verified against the real Neon database:
 - baseline and invitation/case-study migrations recorded as applied, no schema
   drift;
 - server logs contain no invitation URLs, tokens, passwords or JWTs;
-- database left clean: 1 admin user, 1 draft legacy page, no test content.
+- database left clean: no test users, invitations or content — only the
+  original admin account(s) and the draft `hello` page remain.
 
 Known limitations / pending:
 
