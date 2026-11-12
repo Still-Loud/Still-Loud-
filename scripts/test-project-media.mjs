@@ -23,6 +23,7 @@ const IMAGE = path.join(
   'test-image.webp'
 )
 const SLUG = 'zz-cloudinary-project'
+const RELATED_SLUG = 'zz-related-project'
 const EMAIL = 'zz-cloudinary-admin@example.com'
 const PASSWORD = `Zz-${crypto.randomBytes(18).toString('base64url')}`
 
@@ -47,7 +48,7 @@ async function until(fn, attempts = 8, delay = 1000) {
 async function cleanup() {
   const { docs: projects } = await payload.find({
     collection: 'projects',
-    where: { slug: { equals: SLUG } },
+    where: { slug: { in: [SLUG, RELATED_SLUG] } },
     limit: 10,
     depth: 0,
     overrideAccess: true,
@@ -117,6 +118,23 @@ try {
     overrideAccess: true,
   })
 
+  const relatedCreate = await fetch(`${BASE}/api/projects`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `JWT ${token}` },
+    body: JSON.stringify({
+      title: 'ZZ Related Project',
+      slug: RELATED_SLUG,
+      category: 'branding',
+      mediaType: 'image',
+      image: image.id,
+      description: 'Temporary related project.',
+      _status: 'published',
+    }),
+  })
+  const related = await relatedCreate.json()
+  const relatedId = related?.doc?.id
+  check('REST create related project', relatedCreate.status === 201 && Boolean(relatedId), String(relatedCreate.status))
+
   const create = await fetch(`${BASE}/api/projects`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `JWT ${token}` },
@@ -127,6 +145,13 @@ try {
       mediaType: 'image',
       image: image.id,
       description: 'Temporary project used to verify Cloudinary media on the public site.',
+      objective: 'ZZ objective copy.',
+      challenge: 'ZZ challenge copy.',
+      strategy: 'ZZ strategy copy.',
+      creativeProcess: 'ZZ process copy.',
+      finalSolution: 'ZZ solution copy.',
+      externalLinks: [{ label: 'ZZ Live Site', url: 'https://example.com/zz' }],
+      relatedProjects: [relatedId],
       _status: 'published',
     }),
   })
@@ -139,6 +164,10 @@ try {
   check('project page status', detail.status === 200, String(detail.status))
   check('project page uses Cloudinary', html.includes('res.cloudinary.com'))
   check('project page has no local media route', !html.includes('/api/media/file/'))
+  check('case study objective renders', html.includes('ZZ objective copy.'))
+  check('case study final solution renders', html.includes('ZZ solution copy.'))
+  check('external links render', html.includes('ZZ Live Site'))
+  check('related projects render', html.includes('ZZ Related Project'))
 
   check(
     'projects listing revalidated',

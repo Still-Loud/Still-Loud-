@@ -8,6 +8,7 @@ import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
 import { Categories } from './collections/Categories.js'
+import { Invitations } from './collections/Invitations.js'
 import { Media } from './collections/Media.js'
 import { Pages } from './collections/Pages.js'
 import { Posts } from './collections/Posts.js'
@@ -18,13 +19,20 @@ import { Users } from './collections/Users.js'
 import { HomePage } from './globals/HomePage.js'
 import { createCloudinaryAdapter } from './lib/cloudinaryAdapter.js'
 import { isCloudinaryConfigured } from './lib/cloudinary.js'
+import { emailFrom, emailFromName, emailConfigured, smtpSettings } from './lib/email.js'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 const cloudinaryEnabled = isCloudinaryConfigured()
-const emailEnabled = Boolean(
-  process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS
+const smtp = smtpSettings()
+const emailEnabled = emailConfigured()
+
+/* Public origin: the local domain in development, the real domain in
+   production. It drives invitation links, CSRF, CORS and absolute metadata. */
+const serverURL = (process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000').replace(
+  /\/+$/,
+  ''
 )
 
 export default buildConfig({
@@ -37,23 +45,39 @@ export default buildConfig({
       titleSuffix: ' — StillLoud',
     },
     components: {
-      afterNavLinks: ['/components/admin/InviteUserLink#InviteUserLink'],
+      afterNavLinks: ['/components/admin/UserManagementLink#UserManagementLink'],
       views: {
-        invite: {
-          Component: '/components/admin/views/InviteUser#InviteUser',
-          path: '/invite',
+        'user-management': {
+          Component: '/components/admin/views/UserManagement#UserManagement',
+          path: '/user-management',
         },
       },
     },
   },
 
-  collections: [Users, Media, Pages, Posts, Categories, Projects, Testimonials, Redirects],
+  collections: [
+    Users,
+    Invitations,
+    Media,
+    Pages,
+    Posts,
+    Categories,
+    Projects,
+    Testimonials,
+    Redirects,
+  ],
 
   globals: [HomePage],
 
   editor: lexicalEditor(),
 
   secret: process.env.PAYLOAD_SECRET || '',
+
+  /* Cookie-authenticated requests must come from the site itself. Payload
+     validates the Origin header against this list (CSRF protection). */
+  cors: [serverURL],
+  csrf: [serverURL],
+  serverURL,
 
   db: postgresAdapter({
     pool: {
@@ -84,26 +108,21 @@ export default buildConfig({
     }),
   ],
 
-  /* Invitations and password resets are sent through SMTP when configured.
-     Without it Payload falls back to its console logger. */
+  /* Invitations and password resets are sent through Brevo SMTP when
+     configured. Without it Payload falls back to its console logger and the
+     admin still copies invitation links manually. */
   ...(emailEnabled
     ? {
         email: nodemailerAdapter({
-          defaultFromAddress: process.env.EMAIL_FROM || 'team.stillloud@gmail.com',
-          defaultFromName: process.env.EMAIL_FROM_NAME || 'StillLoud',
+          defaultFromAddress: emailFrom(),
+          defaultFromName: emailFromName(),
           transportOptions: {
-            host: process.env.SMTP_HOST,
-            port: Number(process.env.SMTP_PORT || 587),
-            secure: Number(process.env.SMTP_PORT) === 465,
-            auth: {
-              user: process.env.SMTP_USER,
-              pass: process.env.SMTP_PASS,
-            },
+            host: smtp.host,
+            port: smtp.port,
+            secure: smtp.secure,
+            auth: smtp.auth,
           },
         }),
       }
     : {}),
-
-  // Server URL used for absolute links in emails and the admin UI.
-  serverURL: process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000',
 })

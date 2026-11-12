@@ -65,7 +65,7 @@ export default async function ProjectDetailPage({ params }) {
   const payload = await getPayloadClient()
   const url = `/projects/${project.slug}`
 
-  const { docs: related } = await payload.find({
+  const { docs: relatedFromCategory } = await payload.find({
     collection: 'projects',
     where: {
       _status: { equals: 'published' },
@@ -78,6 +78,17 @@ export default async function ProjectDetailPage({ params }) {
     overrideAccess: false,
   })
 
+  /* A manual selection wins. Only published projects may surface publicly,
+     even if an editor linked a draft before publishing it. */
+  const manualRelated = (project.relatedProjects || []).filter(
+    (item) =>
+      item &&
+      typeof item === 'object' &&
+      item.id !== project.id &&
+      (preview || item._status === 'published')
+  )
+  const related = (manualRelated.length > 0 ? manualRelated : relatedFromCategory).slice(0, 3)
+
   const isVideo = project.mediaType === 'video'
   const image = mediaUrl(project.image, 'hero')
   const videoSrc = project.videoUrl || mediaUrl(project.video)
@@ -85,6 +96,15 @@ export default async function ProjectDetailPage({ params }) {
   const categoryLabel = PROJECT_CATEGORY_LABELS[project.category] || 'Project'
   const services = (project.services || []).filter(Boolean)
   const gallery = (project.gallery || []).filter((item) => item?.image)
+  const videoGallery = (project.videoGallery || []).filter((item) => item?.video)
+  const externalLinks = (project.externalLinks || []).filter((link) => link?.url)
+  const caseStudySections = [
+    { title: 'Objective', body: project.objective },
+    { title: 'Challenge', body: project.challenge },
+    { title: 'Strategy', body: project.strategy },
+    { title: 'Creative process', body: project.creativeProcess },
+    { title: 'Final solution', body: project.finalSolution },
+  ].filter((section) => section.body)
 
   const schema = {
     '@context': 'https://schema.org',
@@ -183,6 +203,38 @@ export default async function ProjectDetailPage({ params }) {
               )
             )}
 
+            {caseStudySections.length > 0 && (
+              <section className="project-case-study" aria-label="Case study">
+                {caseStudySections.map((section) => (
+                  <div key={section.title} className="project-case-section">
+                    <h2>{section.title}</h2>
+                    <p>{section.body}</p>
+                  </div>
+                ))}
+              </section>
+            )}
+
+            {videoGallery.length > 0 && (
+              <section className="project-gallery project-video-gallery" aria-label="Project videos">
+                <h2>Project videos</h2>
+                <div className="project-gallery-grid">
+                  {videoGallery.map((item, index) => (
+                    <figure key={item.id || `video-${index}`}>
+                      <video
+                        src={mediaUrl(item.video)}
+                        poster={mediaPosterUrl(item.video) || undefined}
+                        controls
+                        playsInline
+                        preload="metadata"
+                        aria-label={item.caption || `${project.title} video ${index + 1}`}
+                      />
+                      {item.caption && <figcaption>{item.caption}</figcaption>}
+                    </figure>
+                  ))}
+                </div>
+              </section>
+            )}
+
             {gallery.length > 0 && (
               <section className="project-gallery" aria-label="Project gallery">
                 <h2>Project gallery</h2>
@@ -239,6 +291,22 @@ export default async function ProjectDetailPage({ params }) {
                     <a href={project.externalUrl} target="_blank" rel="noopener noreferrer">
                       Visit project <i className="fas fa-arrow-up-right-from-square" />
                     </a>
+                  </dd>
+                </>
+              )}
+              {externalLinks.length > 0 && (
+                <>
+                  <dt>Links</dt>
+                  <dd>
+                    <ul>
+                      {externalLinks.map((link, index) => (
+                        <li key={link.id || index}>
+                          <a href={link.url} target="_blank" rel="noopener noreferrer">
+                            {link.label || link.url}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
                   </dd>
                 </>
               )}

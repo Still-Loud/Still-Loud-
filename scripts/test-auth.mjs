@@ -1,10 +1,11 @@
 /**
- * Exercises invitation-only auth end to end.
+ * Auth smoke test for the invitation-only CMS.
  *
  *   node --env-file=.env scripts/test-auth.mjs
  *
- * Creates temporary users, checks the invite endpoint, the admin invite screen
- * and the deactivated-login guard, then removes the temporary users.
+ * Uses the current invitation architecture: generating a link must not create
+ * an account, accepting it must, and deactivated users must be refused. The
+ * deeper invitation matrix lives in scripts/test-invitations.mjs.
  */
 import crypto from 'crypto'
 
@@ -13,17 +14,27 @@ import { getPayload } from 'payload'
 import config from '../payload.config.js'
 
 const BASE = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+const RUN = crypto.randomBytes(4).toString('hex')
 const payload = await getPayload({ config })
 
-const ADMIN_EMAIL = 'zz-test-admin@example.com'
-const EDITOR_EMAIL = 'zz-test-editor@example.com'
-const LOCKED_EMAIL = 'zz-test-locked@example.com'
+const ADMIN_EMAIL = `zz-auth-admin-${RUN}@example.com`
+const EDITOR_EMAIL = `zz-auth-editor-${RUN}@example.com`
 const PASSWORD = `Zz-${crypto.randomBytes(18).toString('base64url')}`
 
 async function cleanup() {
+  for (const invitation of (await payload.find({
+    collection: 'invitations',
+    where: { email: { in: [ADMIN_EMAIL, EDITOR_EMAIL] } },
+    limit: 20,
+    depth: 0,
+    overrideAccess: true,
+  })).docs) {
+    await payload.delete({ collection: 'invitations', id: invitation.id, overrideAccess: true })
+  }
+
   const { docs } = await payload.find({
     collection: 'users',
-    where: { email: { in: [ADMIN_EMAIL, EDITOR_EMAIL, LOCKED_EMAIL] } },
+    where: { email: { in: [ADMIN_EMAIL, EDITOR_EMAIL] } },
     limit: 10,
     depth: 0,
     overrideAccess: true,
@@ -34,33 +45,6 @@ async function cleanup() {
   return docs.length
 }
 
-await cleanup()
-
-const admin = await payload.create({
-  collection: 'users',
-  data: {
-    name: 'ZZ Test Admin',
-    email: ADMIN_EMAIL,
-    password: PASSWORD,
-    role: 'admin',
-    active: true,
-    publishingEnabled: true,
-  },
-  overrideAccess: true,
-})
-
-const locked = await payload.create({
-  collection: 'users',
-  data: {
-    name: 'ZZ Test Locked',
-    email: LOCKED_EMAIL,
-    password: PASSWORD,
-    role: 'editor',
-    active: false,
-  },
-  overrideAccess: true,
-})
-
 async function json(response) {
   const text = await response.text()
   try {
@@ -70,34 +54,70 @@ async function json(response) {
   }
 }
 
-const login = await fetch(`${BASE}/api/users/login`, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ email: ADMIN_EMAIL, password: PASSWORD }),
-})
-const loginBody = await json(login)
-const token = loginBody.token
-console.log(`admin login: ${login.status} token=${Boolean(token)} role=${loginBody.user?.role}`)
+async function login(email, password) {
+  const response = await fetch(`${BASE}/api/users/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  })
+  return { status: response.status, body: await json(response) }
+}
 
-const anonymousInvite = await fetch(`${BASE}/api/users/invite`, {
+await cleanup()
+
+await payload.create({
+  collection: 'users',
+  data: {
+    name: 'ZZ Auth Admin',
+    email: ADMIN_EMAIL,
+    password: PASSWORD,
+    role: 'admin',
+    active: true,
+    publishingEnabled: true,
+  },
+  overrideAccess: true,
+})
+
+const adminLogin = await login(ADMIN_EMAIL, PASSWORD)
+console.log(`admin login: ${adminLogin.status} token=${Boolean(adminLogin.body.token)} role=${adminLogin.body.user?.role}`)
+const token = adminLogin.body.token
+
+const anonymousInvite = await fetch(`${BASE}/api/invitations/generate`, {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ name: 'Anon', email: 'anon@example.com', role: 'editor' }),
 })
 console.log(`anonymous invite: ${anonymousInvite.status}`)
 
-const invite = await fetch(`${BASE}/api/users/invite`, {
+const invite = await fetch(`${BASE}/api/invitations/generate`, {
   method: 'POST',
   headers: { 'Content-Type': 'application/json', Authorization: `JWT ${token}` },
-  body: JSON.stringify({ name: 'ZZ Test Editor', email: EDITOR_EMAIL, role: 'editor' }),
+  body: JSON.stringify({ name: 'ZZ Auth Editor', email: EDITOR_EMAIL, role: 'editor' }),
 })
-console.log(`admin invite: ${invite.status} ${JSON.stringify(await json(invite))}`)
+const inviteBody = await json(invite)
+console.log(`admin invite: ${invite.status} url=${Boolean(inviteBody.url)}`)
+const inviteToken = inviteBody.url ? new URL(inviteBody.url).searchParams.get('token') : null
 
-const adminScreen = await fetch(`${BASE}/admin/invite`, {
-  headers: { Cookie: `payload-token=${token}` },
-  redirect: 'manual',
+const beforeAccept = await payload.find({
+  collection: 'users',
+  where: { email: { equals: EDITOR_EMAIL } },
+  limit: 1,
+  depth: 0,
+  overrideAccess: true,
 })
-console.log(`/admin/invite: ${adminScreen.status}`)
+console.log(`user before acceptance: ${beforeAccept.docs.length} (expected 0)`)
+
+const accept = await fetch(`${BASE}/api/invitations/accept`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    token: inviteToken,
+    name: 'ZZ Auth Editor',
+    password: PASSWORD,
+    confirmPassword: PASSWORD,
+  }),
+})
+console.log(`accept invitation: ${accept.status}`)
 
 const invited = await payload.find({
   collection: 'users',
@@ -107,16 +127,20 @@ const invited = await payload.find({
   overrideAccess: true,
 })
 console.log(
-  `invited user: ${invited.docs.length} role=${invited.docs[0]?.role} active=${invited.docs[0]?.active}`
+  `user after acceptance: ${invited.docs.length} role=${invited.docs[0]?.role} active=${invited.docs[0]?.active}`
 )
+if (invited.docs[0]) {
+  await payload.update({
+    collection: 'users',
+    id: invited.docs[0].id,
+    data: { active: false },
+    overrideAccess: true,
+  })
+}
 
-const lockedLogin = await fetch(`${BASE}/api/users/login`, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ email: LOCKED_EMAIL, password: PASSWORD }),
-})
-console.log(`deactivated login: ${lockedLogin.status} ${JSON.stringify(await json(lockedLogin))}`)
+const blockedLogin = await login(EDITOR_EMAIL, PASSWORD)
+console.log(`deactivated login: ${blockedLogin.status} (expected 403)`)
 
 const removed = await cleanup()
-console.log(`cleanup: removed ${removed} test users (admin id ${admin.id}, locked id ${locked.id})`)
+console.log(`cleanup: removed ${removed} test users`)
 process.exit(0)

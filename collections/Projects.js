@@ -184,6 +184,46 @@ export const Projects = {
               },
             },
             {
+              type: 'collapsible',
+              label: 'Case study sections',
+              admin: {
+                description:
+                  'Optional structured sections. They render as headings above the gallery.',
+              },
+              fields: [
+                {
+                  name: 'objective',
+                  type: 'textarea',
+                  label: 'Project objective',
+                  admin: { description: 'What the client wanted to achieve.' },
+                },
+                {
+                  name: 'challenge',
+                  type: 'textarea',
+                  label: 'Challenge',
+                  admin: { description: 'The problem or constraint the work had to solve.' },
+                },
+                {
+                  name: 'strategy',
+                  type: 'textarea',
+                  label: 'Strategy',
+                  admin: { description: 'The thinking and plan behind the work.' },
+                },
+                {
+                  name: 'creativeProcess',
+                  type: 'textarea',
+                  label: 'Creative process',
+                  admin: { description: 'How the idea was explored and produced.' },
+                },
+                {
+                  name: 'finalSolution',
+                  type: 'textarea',
+                  label: 'Final solution',
+                  admin: { description: 'What was delivered and how it performed.' },
+                },
+              ],
+            },
+            {
               name: 'gallery',
               type: 'array',
               label: 'Gallery',
@@ -201,6 +241,26 @@ export const Projects = {
               ],
               admin: {
                 description: 'Additional images shown under the story. Drag to reorder.',
+              },
+            },
+            {
+              name: 'videoGallery',
+              type: 'array',
+              label: 'Video gallery',
+              fields: [
+                {
+                  name: 'video',
+                  type: 'upload',
+                  relationTo: 'media',
+                  required: true,
+                },
+                {
+                  name: 'caption',
+                  type: 'text',
+                },
+              ],
+              admin: {
+                description: 'Extra reels or clips shown with the project gallery.',
               },
             },
           ],
@@ -254,6 +314,30 @@ export const Projects = {
                   },
                 },
               ],
+            },
+            {
+              name: 'externalLinks',
+              type: 'array',
+              label: 'External links',
+              fields: [
+                { name: 'label', type: 'text', required: true },
+                { name: 'url', type: 'text', required: true },
+              ],
+              admin: {
+                description: 'Live site, social posts, press or award links.',
+              },
+            },
+            {
+              name: 'relatedProjects',
+              type: 'relationship',
+              relationTo: 'projects',
+              hasMany: true,
+              label: 'Related projects',
+              filterOptions: ({ id }) => (id ? { id: { not_equals: id } } : true),
+              admin: {
+                description:
+                  'Optional manual selection shown at the end of the page. Empty falls back to same-category work.',
+              },
             },
             {
               name: 'badge',

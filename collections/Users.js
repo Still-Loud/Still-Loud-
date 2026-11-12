@@ -1,5 +1,3 @@
-import crypto from 'crypto'
-
 import { APIError } from 'payload'
 
 import { isAdmin } from './access.js'
@@ -7,13 +5,14 @@ import { isAdmin } from './access.js'
 /**
  * CMS accounts.
  *
- * There is no public sign-up. Only an admin can create/invite a user:
- *   • the admin UI has an "Invite user" screen, or
- *   • POST /api/users/invite with { name, email, role }.
+ * There is no public sign-up. Accounts are created either by an administrator
+ * or by accepting an invitation (see collections/Invitations.js). Invitations
+ * never create the account up front: the Users document only exists after the
+ * invited person sets a password at /accept-invite.
  *
- * Inviting creates the account with a random password that is thrown away, then
- * uses Payload's built-in forgot-password flow to email a one-time setup link.
- * The link expires (auth.resetPasswordExpiration) and the token is single use.
+ * Payload owns authentication end to end: password hashing, JWT signing,
+ * HTTP-only cookies, token refresh, logout and server-side sessions. Nothing
+ * here re-implements or stores a JWT.
  */
 /** @type {import('payload').CollectionConfig} */
 export const Users = {
@@ -23,9 +22,14 @@ export const Users = {
     plural: 'Users',
   },
   auth: {
-    tokenExpiration: 60 * 60 * 4, // 4 hours
+    /* Short-lived JWT + a server-side session id. Clearing a user's sessions
+       invalidates every existing cookie immediately (used when an account is
+       disabled). */
+    tokenExpiration: 60 * 60 * 2, // 2 hours
+    useSessions: true,
     maxLoginAttempts: 5,
-    lockTime: 10 * 60 * 1000, // 10 minutes
+    lockTime: 15 * 60 * 1000, // 15 minutes
+    resetPasswordExpiration: 60 * 60, // 1 hour
     cookies: {
       sameSite: 'Lax',
       secure: process.env.NODE_ENV === 'production',
@@ -77,7 +81,7 @@ export const Users = {
       },
     ],
     beforeChange: [
-      async ({ data, req, operation }) => {
+      async ({ data, req, operation, originalDoc }) => {
         // The very first account must be an admin, otherwise nobody can
         // manage roles or publish content.
         if (operation === 'create') {
@@ -86,84 +90,50 @@ export const Users = {
             return { ...data, role: 'admin', publishingEnabled: true, active: true }
           }
         }
+
+        /* Defense in depth: field access already blocks this in the API, but
+           never let a non-admin write privileged fields through any path. */
+        if (operation === 'update' && req.user && req.user.role !== 'admin') {
+          const next = { ...data }
+          if (originalDoc) {
+            if (next.role !== undefined && next.role !== originalDoc.role) next.role = originalDoc.role
+            if (next.active !== undefined && next.active !== originalDoc.active) next.active = originalDoc.active
+            if (
+              next.publishingEnabled !== undefined &&
+              next.publishingEnabled !== originalDoc.publishingEnabled
+            ) {
+              next.publishingEnabled = originalDoc.publishingEnabled
+            }
+          }
+          return next
+        }
+
         return data
       },
     ],
-  },
-  endpoints: [
-    {
-      path: '/invite',
-      method: 'post',
-      handler: async (req) => {
-        if (req.user?.role !== 'admin') {
-          return Response.json({ error: 'Only administrators can invite users.' }, { status: 403 })
-        }
-
-        let body = {}
-        try {
-          body = await req.json?.()
-        } catch {
-          return Response.json({ error: 'Invalid request body.' }, { status: 400 })
-        }
-
-        const email = String(body?.email || '').trim().toLowerCase()
-        const name = String(body?.name || '').trim()
-        const role = body?.role === 'admin' ? 'admin' : 'editor'
-
-        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-          return Response.json({ error: 'Enter a valid email address.' }, { status: 400 })
-        }
-        if (!name) {
-          return Response.json({ error: 'Enter the person’s name.' }, { status: 400 })
-        }
-
-        const existing = await req.payload.find({
-          collection: 'users',
-          where: { email: { equals: email } },
-          limit: 1,
-          depth: 0,
-          overrideAccess: true,
-        })
-        if (existing.totalDocs > 0) {
-          return Response.json({ error: 'A user with this email already exists.' }, { status: 409 })
-        }
-
-        // Random, never shown or stored outside Payload's hash. The user sets
-        // their own password through the emailed reset link.
-        const throwawayPassword = crypto.randomBytes(32).toString('base64url')
-
-        try {
-          await req.payload.create({
+    afterChange: [
+      async ({ doc, previousDoc, operation, req }) => {
+        /* Disabling an account also drops its server-side sessions, so an
+           already-signed-in browser cannot keep using a stolen cookie. */
+        if (
+          operation === 'update' &&
+          doc.active === false &&
+          previousDoc?.active !== false &&
+          !req.context?.skipSessionRevoke
+        ) {
+          await req.payload.update({
             collection: 'users',
-            data: {
-              name,
-              email,
-              role,
-              active: true,
-              publishingEnabled: role === 'admin',
-              password: throwawayPassword,
-            },
+            id: doc.id,
+            data: { sessions: [] },
             overrideAccess: true,
             req,
+            context: { skipSessionRevoke: true },
           })
-
-          await req.payload.forgotPassword({
-            collection: 'users',
-            data: { email },
-            req,
-          })
-        } catch (error) {
-          req.payload.logger.error(`Invite failed for ${email}: ${error?.message}`)
-          return Response.json(
-            { error: 'Could not send the invitation. Check the email settings and try again.' },
-            { status: 500 }
-          )
         }
-
-        return Response.json({ ok: true, email })
+        return doc
       },
-    },
-  ],
+    ],
+  },
   fields: [
     {
       name: 'name',
