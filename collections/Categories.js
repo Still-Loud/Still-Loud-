@@ -1,5 +1,7 @@
+import { categoryPaths, revalidate } from '../lib/revalidate.js'
 import { slugify } from '../lib/slugify.js'
 import { isAdmin, isAdminOrEditor } from './access.js'
+import { seoField } from './fields/seo.js'
 
 /** @type {import('payload').CollectionConfig} */
 export const Categories = {
@@ -12,6 +14,7 @@ export const Categories = {
     group: 'Blog',
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'updatedAt'],
+    description: 'Blog categories. Each one gets a public page at /blog/category/<slug>.',
   },
   access: {
     read: () => true,
@@ -28,12 +31,25 @@ export const Categories = {
         return data
       },
     ],
+    afterChange: [
+      async ({ doc, previousDoc }) => {
+        await revalidate(categoryPaths(doc?.slug, previousDoc?.slug))
+        return doc
+      },
+    ],
+    afterDelete: [
+      async ({ doc }) => {
+        await revalidate(categoryPaths(doc?.slug))
+        return doc
+      },
+    ],
   },
   fields: [
     {
       name: 'title',
       type: 'text',
       required: true,
+      label: 'Name',
     },
     {
       name: 'slug',
@@ -49,7 +65,12 @@ export const Categories = {
     {
       name: 'description',
       type: 'textarea',
-      maxLength: 200,
+      maxLength: 300,
+      label: 'Description',
+      admin: {
+        description: 'A sentence or two shown at the top of the category page.',
+      },
     },
+    seoField,
   ],
 }

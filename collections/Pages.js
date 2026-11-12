@@ -1,14 +1,29 @@
-import { revalidate } from '../lib/revalidate.js'
+import { pagePaths, revalidate } from '../lib/revalidate.js'
+import { reservedSlugMessage } from '../lib/reserved-slugs.js'
 import { slugify } from '../lib/slugify.js'
 import { canPublish, isAdmin, publishedOrLoggedIn } from './access.js'
 import { seoField } from './fields/seo.js'
 
+const anchorField = {
+  name: 'anchor',
+  type: 'text',
+  label: 'Anchor (optional)',
+  admin: {
+    description: 'Lets you link to this block directly, e.g. /about-us#team.',
+  },
+}
+
 /**
- * Fixed, hand-built page content (D5) — no block builder.
+ * Custom, server-rendered pages.
  *
- * Each tab maps 1:1 to a section of the existing home page, so editors can
- * change copy without touching layout. Every field is optional: when empty the
- * frontend falls back to the copy currently in components/.
+ * The page body is a short list of controlled blocks rather than a free-form
+ * builder: every block maps to a component in components/pages/ and reuses the
+ * existing StillLoud styling, so editors can add sections without changing the
+ * design system.
+ *
+ * The legacy home-copy fields live in hidden tabs at the bottom. They are no
+ * longer displayed (the homepage is managed by the HomePage global) but the
+ * columns stay in place so the existing `hello` record is not destroyed.
  */
 /** @type {import('payload').CollectionConfig} */
 export const Pages = {
@@ -21,7 +36,10 @@ export const Pages = {
     group: 'Content',
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', '_status', 'updatedAt'],
-    description: 'Home page section copy. Layout stays fixed.',
+    description:
+      'Extra pages such as About us or Our process. Published pages get a real URL: /<slug>.',
+    preview: (doc) =>
+      doc?.slug ? `/api/preview?collection=pages&slug=${encodeURIComponent(doc.slug)}` : null,
   },
   versions: {
     drafts: true,
@@ -42,16 +60,23 @@ export const Pages = {
         return data
       },
     ],
-    /* Home copy is cached; purge it (and the sitemap) on save. */
+    beforeChange: [
+      ({ data }) => {
+        if (data?._status === 'published' && !data.publishedAt) {
+          return { ...data, publishedAt: new Date().toISOString() }
+        }
+        return data
+      },
+    ],
     afterChange: [
-      async ({ doc }) => {
-        await revalidate(['/', '/sitemap.xml'])
+      async ({ doc, previousDoc }) => {
+        await revalidate(pagePaths(doc?.slug, previousDoc?.slug))
         return doc
       },
     ],
     afterDelete: [
       async ({ doc }) => {
-        await revalidate(['/', '/sitemap.xml'])
+        await revalidate(pagePaths(doc?.slug))
         return doc
       },
     ],
@@ -61,9 +86,7 @@ export const Pages = {
       name: 'title',
       type: 'text',
       required: true,
-      admin: {
-        description: 'Internal name, e.g. “Home”.',
-      },
+      label: 'Page title',
     },
     {
       name: 'slug',
@@ -73,14 +96,205 @@ export const Pages = {
       index: true,
       admin: {
         position: 'sidebar',
-        description: 'Use “home” for the single-page site.',
+        description: 'The page address. /about-us → slug “about-us”.',
+      },
+      validate: (value) => reservedSlugMessage(value),
+    },
+    {
+      type: 'ui',
+      name: 'publicUrl',
+      admin: {
+        position: 'sidebar',
+        components: {
+          Field: {
+            path: '/components/admin/PublicUrl#PublicUrl',
+            clientProps: { collection: 'pages' },
+          },
+        },
+      },
+    },
+    {
+      name: 'description',
+      type: 'textarea',
+      label: 'Page description',
+      maxLength: 300,
+      admin: {
+        description: 'One or two sentences. Used in search results and social cards when SEO fields are empty.',
+      },
+    },
+    {
+      name: 'featuredImage',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'Featured image',
+      admin: {
+        description: 'Optional header image and fallback social image.',
+      },
+    },
+    {
+      name: 'publishedAt',
+      type: 'date',
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+        date: { pickerAppearance: 'dayAndTime' },
+        description: 'Set automatically on first publish.',
       },
     },
     {
       type: 'tabs',
       tabs: [
         {
-          label: 'Hero',
+          label: 'Page content',
+          description: 'Add one section at a time. Drag to reorder.',
+          fields: [
+            {
+              name: 'layout',
+              type: 'blocks',
+              labels: { singular: 'Section', plural: 'Sections' },
+              blocks: [
+                {
+                  slug: 'text',
+                  labels: { singular: 'Text section', plural: 'Text sections' },
+                  fields: [
+                    anchorField,
+                    { name: 'eyebrow', type: 'text', label: 'Small label above the heading' },
+                    { name: 'heading', type: 'text', label: 'Heading' },
+                    { name: 'content', type: 'richText', label: 'Body' },
+                  ],
+                },
+                {
+                  slug: 'imageText',
+                  labels: { singular: 'Image and text', plural: 'Image and text sections' },
+                  fields: [
+                    anchorField,
+                    { name: 'eyebrow', type: 'text' },
+                    { name: 'heading', type: 'text', label: 'Heading' },
+                    { name: 'content', type: 'richText', label: 'Body' },
+                    { name: 'image', type: 'upload', relationTo: 'media', required: true },
+                    { name: 'imageAlt', type: 'text', label: 'Image description (alt text)' },
+                    {
+                      name: 'imagePosition',
+                      type: 'select',
+                      defaultValue: 'right',
+                      options: [
+                        { label: 'Image on the right', value: 'right' },
+                        { label: 'Image on the left', value: 'left' },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  slug: 'gallery',
+                  labels: { singular: 'Gallery', plural: 'Galleries' },
+                  fields: [
+                    anchorField,
+                    { name: 'eyebrow', type: 'text' },
+                    { name: 'heading', type: 'text', label: 'Heading' },
+                    {
+                      name: 'images',
+                      type: 'array',
+                      label: 'Images',
+                      minRows: 1,
+                      fields: [
+                        { name: 'image', type: 'upload', relationTo: 'media', required: true },
+                        { name: 'caption', type: 'text' },
+                      ],
+                    },
+                    {
+                      name: 'columns',
+                      type: 'select',
+                      defaultValue: '3',
+                      options: [
+                        { label: 'Two columns', value: '2' },
+                        { label: 'Three columns', value: '3' },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  slug: 'video',
+                  labels: { singular: 'Video section', plural: 'Video sections' },
+                  fields: [
+                    anchorField,
+                    { name: 'heading', type: 'text', label: 'Heading' },
+                    { name: 'text', type: 'textarea', label: 'Supporting text' },
+                    {
+                      name: 'video',
+                      type: 'upload',
+                      relationTo: 'media',
+                      label: 'Uploaded video',
+                      admin: { description: 'Upload an MP4/MOV to the Media Library.' },
+                    },
+                    {
+                      name: 'videoUrl',
+                      type: 'text',
+                      label: 'External video URL',
+                      admin: { description: 'Alternative to uploading. Overrides the upload.' },
+                    },
+                    { name: 'poster', type: 'upload', relationTo: 'media', label: 'Poster frame' },
+                  ],
+                },
+                {
+                  slug: 'faq',
+                  labels: { singular: 'FAQ', plural: 'FAQs' },
+                  fields: [
+                    anchorField,
+                    { name: 'heading', type: 'text', label: 'Heading', defaultValue: 'Frequently asked questions' },
+                    { name: 'text', type: 'textarea', label: 'Supporting text' },
+                    {
+                      name: 'items',
+                      type: 'array',
+                      label: 'Questions',
+                      minRows: 1,
+                      fields: [
+                        { name: 'question', type: 'text', required: true },
+                        { name: 'answer', type: 'textarea', required: true },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  slug: 'cta',
+                  labels: { singular: 'Call to action', plural: 'Calls to action' },
+                  fields: [
+                    anchorField,
+                    { name: 'heading', type: 'text', label: 'Heading', required: true },
+                    { name: 'text', type: 'textarea', label: 'Supporting text' },
+                    { name: 'buttonLabel', type: 'text', label: 'Button label', defaultValue: 'Get in touch' },
+                    { name: 'buttonUrl', type: 'text', label: 'Button link', defaultValue: '/#contact' },
+                    {
+                      name: 'style',
+                      type: 'select',
+                      defaultValue: 'red',
+                      options: [
+                        { label: 'Red', value: 'red' },
+                        { label: 'Dark', value: 'dark' },
+                      ],
+                    },
+                  ],
+                },
+              ],
+              admin: {
+                description:
+                  'Sections appear in this order. Each one uses the existing StillLoud style.',
+              },
+            },
+          ],
+        },
+        {
+          label: 'SEO',
+          fields: [seoField],
+        },
+
+        /* ---------------------------------------------------------------
+           Legacy home copy. Hidden from editors; kept so the original
+           `hello` document keeps all of its data. New content lives in the
+           HomePage global.
+           --------------------------------------------------------------- */
+        {
+          label: 'Hero (legacy)',
+          admin: { condition: () => false },
           fields: [
             {
               type: 'row',
@@ -95,16 +309,8 @@ export const Pages = {
               labels: { singular: 'Word', plural: 'Words' },
               fields: [
                 { name: 'text', type: 'text', required: true },
-                {
-                  name: 'accent',
-                  type: 'checkbox',
-                  defaultValue: false,
-                  label: 'Highlight in purple',
-                },
+                { name: 'accent', type: 'checkbox', defaultValue: false },
               ],
-              admin: {
-                description: 'Rendered one word per line, alternating colour.',
-              },
             },
             {
               type: 'row',
@@ -124,7 +330,8 @@ export const Pages = {
           ],
         },
         {
-          label: 'About',
+          label: 'About (legacy)',
+          admin: { condition: () => false },
           fields: [
             { name: 'aboutEyebrow', type: 'text' },
             {
@@ -151,13 +358,7 @@ export const Pages = {
               name: 'aboutFeatures',
               type: 'array',
               fields: [
-                {
-                  name: 'icon',
-                  type: 'text',
-                  admin: {
-                    description: 'Font Awesome class, e.g. fa-solid fa-compass',
-                  },
-                },
+                { name: 'icon', type: 'text' },
                 { name: 'title', type: 'text', required: true },
                 { name: 'text', type: 'textarea' },
               ],
@@ -172,7 +373,8 @@ export const Pages = {
           ],
         },
         {
-          label: 'Services',
+          label: 'Services (legacy)',
+          admin: { condition: () => false },
           fields: [
             { name: 'servicesEyebrow', type: 'text' },
             {
@@ -191,13 +393,7 @@ export const Pages = {
               type: 'array',
               fields: [
                 { name: 'label', type: 'text', required: true },
-                {
-                  name: 'icon',
-                  type: 'text',
-                  admin: {
-                    description: 'Font Awesome class, e.g. fa-solid fa-laptop-code',
-                  },
-                },
+                { name: 'icon', type: 'text' },
               ],
             },
             {
@@ -216,7 +412,8 @@ export const Pages = {
           ],
         },
         {
-          label: 'Portfolio',
+          label: 'Portfolio (legacy)',
+          admin: { condition: () => false },
           fields: [
             { name: 'portfolioEyebrow', type: 'text' },
             { name: 'portfolioSubtitle', type: 'textarea' },
@@ -229,14 +426,12 @@ export const Pages = {
                 { name: 'image', type: 'upload', relationTo: 'media' },
                 { name: 'alt', type: 'text' },
               ],
-              admin: {
-                description: 'The two large cards on the home page teaser.',
-              },
             },
           ],
         },
         {
-          label: 'Pricing',
+          label: 'Pricing (legacy)',
+          admin: { condition: () => false },
           fields: [
             { name: 'pricingEyebrow', type: 'text' },
             {
@@ -255,19 +450,10 @@ export const Pages = {
               fields: [
                 { name: 'image', type: 'upload', relationTo: 'media' },
                 { name: 'alt', type: 'text' },
-                {
-                  name: 'featured',
-                  type: 'checkbox',
-                  defaultValue: false,
-                  label: 'Highlight this plan',
-                },
+                { name: 'featured', type: 'checkbox', defaultValue: false },
               ],
             },
           ],
-        },
-        {
-          label: 'SEO',
-          fields: [seoField],
         },
       ],
     },

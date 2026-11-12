@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 
-/* Service pills — mirrors js/main.js §3 (first pill active, hover switches) */
-const SERVICES = [
+/* Service pills — mirrors js/main.js §3 (first pill active, hover switches).
+   The list comes from the HomePage global; the defaults match the original. */
+const DEFAULT_SERVICES = [
   { key: 'brand-identity', icon: 'fa-solid fa-star-of-life', label: 'Brand Identity Design' },
   { key: 'ui-ux', icon: 'fa-solid fa-crosshairs', label: 'UI/UX Design' },
   { key: 'social-media', icon: 'fa-solid fa-plus', label: 'Social Media Design' },
@@ -12,12 +13,20 @@ const SERVICES = [
   { key: 'digital-branding', icon: 'fa-solid fa-globe', label: 'Digital Branding' },
 ]
 
-export default function ServicePills() {
-  const [active, setActive] = useState(SERVICES[0].key)
+export default function ServicePills({ services }) {
+  const list = services?.length
+    ? services.map((service, index) => ({
+        key: `service-${index}`,
+        icon: service.icon || 'fa-solid fa-star-of-life',
+        label: service.label,
+      }))
+    : DEFAULT_SERVICES
+
+  const [active, setActive] = useState(list[0]?.key)
 
   return (
     <div className="services-pills">
-      {SERVICES.map((service) => (
+      {list.map((service) => (
         <button
           key={service.key}
           type="button"

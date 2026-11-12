@@ -1,0 +1,197 @@
+/* Project listing, detail pages and small shared additions. Reuses the blog
+   card/typography styles so the visual language stays identical. */
+
+.blog-page .project-grid {
+  align-items: stretch;
+}
+
+.project-card-media {
+  aspect-ratio: 4 / 3;
+}
+
+.project-card-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.project-back-link {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.project-hero .post-breadcrumb {
+  margin-bottom: 18px;
+}
+
+.project-detail-page .project-post-hero .post-title {
+  max-width: 18ch;
+}
+
+.project-hero-media img,
+.project-hero-media video {
+  width: 100%;
+  height: auto;
+  max-height: 680px;
+  object-fit: cover;
+  display: block;
+  border-radius: 18px;
+}
+
+.project-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 56px;
+  align-items: start;
+}
+
+.project-lede {
+  font-size: 1.2rem;
+  line-height: 1.7;
+  color: var(--color-gray-light, #c8cdd2);
+  margin-bottom: 28px;
+}
+
+.project-facts {
+  position: sticky;
+  top: 110px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.project-facts h2 {
+  font-family: var(--font-poppins, inherit);
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-gray, #8b8c91);
+  margin-bottom: 18px;
+}
+
+.project-facts dl {
+  margin: 0;
+}
+
+.project-facts dt {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-gray, #8b8c91);
+  margin-top: 16px;
+}
+
+.project-facts dt:first-child {
+  margin-top: 0;
+}
+
+.project-facts dd {
+  margin: 4px 0 0;
+  font-size: 0.98rem;
+  line-height: 1.6;
+}
+
+.project-facts dd ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.project-facts dd a {
+  color: var(--color-secondary, #fb5607);
+  text-decoration: underline;
+}
+
+.project-cta {
+  margin-top: 28px;
+  width: 100%;
+  justify-content: center;
+}
+
+.project-gallery {
+  margin-top: 48px;
+}
+
+.project-gallery h2 {
+  font-family: var(--font-poppins, inherit);
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.project-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.project-gallery-grid figure {
+  margin: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.project-gallery-grid img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  aspect-ratio: 1 / 1;
+}
+
+.project-gallery-grid figcaption {
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  color: var(--color-gray, #8b8c91);
+}
+
+/* Draft preview notice (admin only) */
+.preview-banner {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  padding: 10px 18px;
+  text-align: center;
+  font-size: 0.9rem;
+  background: #8338ec;
+  color: #fff;
+}
+
+.preview-banner a {
+  color: #fff;
+  text-decoration: underline;
+  font-weight: 700;
+}
+
+/* Testimonial initials fallback */
+.t-company-initials {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(131, 56, 236, 0.2);
+  color: var(--color-white, #fff);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 1024px) {
+  .project-body {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .project-facts {
+    position: static;
+  }
+}
+
+@media (max-width: 700px) {
+  .project-gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

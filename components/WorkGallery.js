@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { GALLERY } from './work-gallery-data'
 
@@ -21,7 +22,9 @@ function matches(category, filter) {
   return category === filter
 }
 
-export default function WorkGallery() {
+export default function WorkGallery({ cards = [] }) {
+  const router = useRouter()
+  const allCards = useMemo(() => [...cards, ...GALLERY], [cards])
   const [filter, setFilter] = useState('all')
   const [revealed, setRevealed] = useState(() => new Set())
   const [lightbox, setLightbox] = useState({ open: false, index: 0 })
@@ -34,8 +37,8 @@ export default function WorkGallery() {
   const lastFilter = useRef(filter)
 
   const visible = useMemo(
-    () => GALLERY.map((card, i) => ({ card, i })).filter(({ card }) => matches(card.category, filter)),
-    [filter]
+    () => allCards.map((card, i) => ({ card, i })).filter(({ card }) => matches(card.category, filter)),
+    [filter, allCards]
   )
 
   /* Image list for the lightbox — visible images only, in gallery order */
@@ -205,7 +208,7 @@ export default function WorkGallery() {
 
       {/* ── Masonry grid ── */}
       <div className="ow-masonry" id="ow-gallery" role="list">
-        {GALLERY.map((card, i) => {
+        {allCards.map((card, i) => {
           const isVisible = matches(card.category, filter)
           const isRevealed = revealed.has(i)
 
@@ -235,6 +238,10 @@ export default function WorkGallery() {
                 )}s`,
               }}
               onClick={() => {
+                if (card.href) {
+                  router.push(card.href)
+                  return
+                }
                 if (card.type === 'video') {
                   toggleReel(i)
                   return
@@ -250,6 +257,7 @@ export default function WorkGallery() {
                       videoRefs.current[i] = el
                     }}
                     src={card.src}
+                    poster={card.poster || undefined}
                     className="gallery-reel-video"
                     loop
                     muted

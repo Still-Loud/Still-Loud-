@@ -3,9 +3,20 @@ import { ScheduleMeetingButton } from './CtaButtons'
 /* Shared footer. `variant="work"` reproduces the portfolio page's slightly
    different footer (v1 our-work.html): only the HIRE US! button, absolute
    section links back to the home page, and a spaced phone number. */
-export default function Footer({ variant = 'home' }) {
+export default function Footer({ variant = 'home', content }) {
   const isWork = variant === 'work'
   const prefix = isWork ? '/#' : '#'
+
+  const phone = content?.contactPhone || '+91 6351139179'
+  const phoneHref = content?.contactPhoneHref || 'tel:+916351139179'
+  const email = content?.contactEmail || 'team.stillloud@gmail.com'
+  const whatsapp = content?.whatsappHref || (isWork ? 'https://wa.me/8866119607' : 'https://wa.me/6351139179')
+  const instagram = content?.instagramUrl || 'https://instagram.com/wearestillloud'
+  const linkedin = content?.linkedinUrl || 'https://www.linkedin.com/company/stillloud/'
+  const pinterest = content?.pinterestUrl || 'https://in.pinterest.com/wearestillloud/'
+  const copyright = content?.footerCopyright || '© 2026 StillLoud. All Rights Reserved.'
+
+  const displayPhone = isWork ? phone.replace(/(\+91\s?)(\d{4})(\d{3})(\d{3})/, '$1$2 $3 $4') : phone
 
   return (
     <footer id="contact" className="footer-section">
@@ -16,16 +27,11 @@ export default function Footer({ variant = 'home' }) {
             <h2>
               <span className="highlight-red">Curious?</span>
               <br />
-              Let&apos;s have a real chat.
+              {content?.footerHeading || 'Let’s have a real chat.'}
             </h2>
           </div>
           <div className="footer-upper-btn-wrap">
-            <a
-              href={isWork ? 'https://wa.me/8866119607' : 'https://wa.me/6351139179'}
-              target="_blank"
-              rel="noreferrer"
-              className="btn btn-hire-us"
-            >
+            <a href={whatsapp} target="_blank" rel="noreferrer" className="btn btn-hire-us">
               HIRE US! <i className="fa-solid fa-circle-phone" />
             </a>
             {!isWork && <ScheduleMeetingButton light />}
@@ -41,34 +47,23 @@ export default function Footer({ variant = 'home' }) {
           <div className="footer-col col-brand">
             <h3 className="footer-logo">StillLoud</h3>
             <p className="brand-bio">
-              Elevating Small Businesses with Strategic Design.
-              <br />
-              <br />
-              Branding • Logo Design • Social Media • Websites • UI/UX
+              {content?.footerBio || (
+                <>
+                  Elevating Small Businesses with Strategic Design.
+                  <br />
+                  <br />
+                  Branding • Logo Design • Social Media • Websites • UI/UX
+                </>
+              )}
             </p>
             <div className="footer-social-links">
-              <a
-                href="https://instagram.com/wearestillloud"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-              >
+              <a href={instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                 <i className="fab fa-instagram" />
               </a>
-              <a
-                href="https://www.linkedin.com/company/stillloud/?viewAsMember=true"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-              >
+              <a href={linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
                 <i className="fab fa-linkedin-in" />
               </a>
-              <a
-                href="https://in.pinterest.com/wearestillloud/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Pinterest"
-              >
+              <a href={pinterest} target="_blank" rel="noopener noreferrer" aria-label="Pinterest">
                 <i className="fab fa-pinterest-p" />
               </a>
             </div>
@@ -109,25 +104,19 @@ export default function Footer({ variant = 'home' }) {
               <li>
                 <span className="contact-label">Call / WhatsApp</span>
                 <span className="contact-value">
-                  <a href="tel:+916351139179">
-                    {isWork ? '+91 6351 139 179' : '+91 6351139179'}
-                  </a>
+                  <a href={phoneHref}>{displayPhone}</a>
                 </span>
               </li>
               <li>
                 <span className="contact-label">Email Us</span>
                 <span className="contact-value">
-                  <a href="mailto:team.stillloud@gmail.com">team.stillloud@gmail.com</a>
+                  <a href={`mailto:${email}`}>{email}</a>
                 </span>
               </li>
               <li>
                 <span className="contact-label">Instagram DM</span>
                 <span className="contact-value">
-                  <a
-                    href="https://instagram.com/wearestillloud"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <a href={instagram} target="_blank" rel="noopener noreferrer">
                     @wearestillloud
                   </a>
                 </span>
@@ -135,11 +124,7 @@ export default function Footer({ variant = 'home' }) {
               <li>
                 <span className="contact-label">LinkedIn</span>
                 <span className="contact-value">
-                  <a
-                    href="https://www.linkedin.com/company/stillloud/?viewAsMember=true"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <a href={linkedin} target="_blank" rel="noopener noreferrer">
                     StillLoud
                   </a>
                 </span>
@@ -147,11 +132,7 @@ export default function Footer({ variant = 'home' }) {
               <li>
                 <span className="contact-label">Pinterest</span>
                 <span className="contact-value">
-                  <a
-                    href="https://in.pinterest.com/wearestillloud/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <a href={pinterest} target="_blank" rel="noopener noreferrer">
                     @wearestillloud
                   </a>
                 </span>
@@ -162,7 +143,7 @@ export default function Footer({ variant = 'home' }) {
 
         {/* Footer Copyright Bar */}
         <div className="footer-bottom">
-          <p className="copyright-text">© 2026 StillLoud. All Rights Reserved.</p>
+          <p className="copyright-text">{copyright}</p>
         </div>
       </div>
     </footer>

@@ -15,6 +15,8 @@ export const Posts = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'publishedAt', '_status', 'updatedAt'],
     description: 'Blog articles. Drafts stay hidden from the public site until published.',
+    preview: (doc) =>
+      doc?.slug ? `/api/preview?collection=posts&slug=${encodeURIComponent(doc.slug)}` : null,
   },
   versions: {
     drafts: true,
@@ -78,10 +80,24 @@ export const Posts = {
       },
     },
     {
+      type: 'ui',
+      name: 'publicUrl',
+      admin: {
+        position: 'sidebar',
+        components: {
+          Field: {
+            path: '/components/admin/PublicUrl#PublicUrl',
+            clientProps: { collection: 'posts' },
+          },
+        },
+      },
+    },
+    {
       name: 'excerpt',
       type: 'textarea',
       required: true,
       maxLength: 320,
+      label: 'Description',
       admin: {
         description: 'Shown in the blog list, search results and social cards.',
       },
@@ -90,6 +106,7 @@ export const Posts = {
       name: 'heroImage',
       type: 'upload',
       relationTo: 'media',
+      label: 'Featured image',
       admin: {
         description: 'Optional cover image. Used for the article header and OG image.',
       },
@@ -104,8 +121,18 @@ export const Posts = {
       type: 'relationship',
       relationTo: 'categories',
       hasMany: true,
+      label: 'Categories',
       admin: {
         position: 'sidebar',
+      },
+    },
+    {
+      name: 'tags',
+      type: 'array',
+      label: 'Tags',
+      fields: [{ name: 'tag', type: 'text', required: true }],
+      admin: {
+        description: 'Free-form keywords used for internal linking and related posts. e.g. branding, packaging.',
       },
     },
     {
@@ -114,18 +141,20 @@ export const Posts = {
       relationTo: 'users',
       admin: {
         position: 'sidebar',
+        description: 'Shown on the article and in structured data.',
       },
       defaultValue: ({ user }) => user?.id,
     },
     {
       name: 'publishedAt',
       type: 'date',
+      label: 'Publication date',
       admin: {
         position: 'sidebar',
         date: {
           pickerAppearance: 'dayAndTime',
         },
-        description: 'Set automatically on first publish.',
+        description: 'Set automatically on first publish. You can backdate it.',
       },
     },
     {

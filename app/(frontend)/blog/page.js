@@ -3,7 +3,7 @@ import '../../../styles/blog.css'
 import BackToTop from '../../../components/BackToTop'
 import Footer from '../../../components/Footer'
 import Navbar from '../../../components/Navbar'
-import PostCard from '../../../components/blog/PostCard'
+import BlogArchive from '../../../components/blog/BlogArchive'
 import TawkTo from '../../../components/TawkTo'
 import { getPayloadClient } from '../../../lib/payload'
 import { buildOpenGraph, buildTwitter } from '../../../lib/metadata'
@@ -32,42 +32,53 @@ export const metadata = {
   twitter: buildTwitter({ title: OG_TITLE, description: OG_DESCRIPTION }),
 }
 
-export const revalidate = 60
+export const revalidate = 300
+
+const PAGE_SIZE = 9
 
 export default async function BlogIndexPage({ searchParams }) {
   const params = (await searchParams) || {}
-  const activeCategory = typeof params.category === 'string' ? params.category : null
+  const query = typeof params.q === 'string' ? params.q.trim() : ''
+  const legacyCategory = typeof params.category === 'string' ? params.category : null
+  const page = Math.max(1, Number.parseInt(String(params.page || '1'), 10) || 1)
 
   const payload = await getPayloadClient()
 
-  const [{ docs: categories }, { docs: allPosts }] = await Promise.all([
-    payload.find({
-      collection: 'categories',
-      limit: 50,
-      sort: 'title',
-      depth: 0,
-    }),
-    payload.find({
-      collection: 'posts',
-      where: { _status: { equals: 'published' } },
-      sort: '-publishedAt',
-      limit: 30,
-      depth: 1,
-      overrideAccess: false,
-    }),
-  ])
+  const { docs: categories } = await payload.find({
+    collection: 'categories',
+    limit: 100,
+    sort: 'title',
+    depth: 0,
+    overrideAccess: false,
+  })
 
-  const activeCategoryDoc = activeCategory
-    ? categories.find((category) => category.slug === activeCategory)
+  const activeCategory = legacyCategory
+    ? categories.find((category) => category.slug === legacyCategory) || null
     : null
 
-  /* Filter in memory: the list is already capped at 30 posts and the category
-     relationship comes back populated at depth 1. */
-  const posts = activeCategoryDoc
-    ? allPosts.filter((post) =>
-        (post.categories || []).some((category) => category?.id === activeCategoryDoc.id)
-      )
-    : allPosts
+  const where = {
+    _status: { equals: 'published' },
+    ...(activeCategory ? { categories: { in: [activeCategory.id] } } : {}),
+    ...(query
+      ? {
+          or: [
+            { title: { contains: query } },
+            { excerpt: { contains: query } },
+            { 'tags.tag': { contains: query } },
+          ],
+        }
+      : {}),
+  }
+
+  const result = await payload.find({
+    collection: 'posts',
+    where,
+    sort: '-publishedAt',
+    limit: PAGE_SIZE,
+    page,
+    depth: 1,
+    overrideAccess: false,
+  })
 
   const blogSchema = {
     '@context': 'https://schema.org',
@@ -75,7 +86,7 @@ export default async function BlogIndexPage({ searchParams }) {
     name: 'StillLoud Blog',
     url: 'https://stillloud.in/blog',
     publisher: { '@type': 'Organization', name: 'StillLoud' },
-    blogPost: posts.slice(0, 10).map((post) => ({
+    blogPost: result.docs.slice(0, 10).map((post) => ({
       '@type': 'BlogPosting',
       headline: post.title,
       url: `https://stillloud.in/blog/${post.slug}`,
@@ -109,57 +120,15 @@ export default async function BlogIndexPage({ searchParams }) {
         </div>
       </section>
 
-      <section className="blog-section" aria-label="Articles">
-        <div className="blog-container">
-          {categories.length > 0 && (
-            <nav className="blog-filters" aria-label="Filter articles by category">
-              <a href="/blog" className={`blog-filter${!activeCategory ? ' active' : ''}`}>
-                All
-              </a>
-              {categories.map((category) => (
-                <a
-                  key={category.id}
-                  href={`/blog?category=${encodeURIComponent(category.slug)}`}
-                  className={`blog-filter${
-                    activeCategory === category.slug ? ' active' : ''
-                  }`}
-                >
-                  {category.title}
-                </a>
-              ))}
-            </nav>
-          )}
-
-          {posts.length > 0 ? (
-            <div className="blog-grid">
-              {posts.map((post) => (
-                <PostCard key={post.id} post={post} />
-              ))}
-            </div>
-          ) : (
-            <div className="blog-empty">
-              <div className="blog-empty-icon" aria-hidden="true">
-                <i className="fas fa-pen-nib" />
-              </div>
-              <h2>{activeCategoryDoc ? 'Nothing here yet' : 'The first article is on its way'}</h2>
-              <p>
-                {activeCategoryDoc
-                  ? `No articles in “${activeCategoryDoc.title}” yet. Check back soon, or browse every article.`
-                  : 'We are writing up the studio playbook — branding, social media and websites that actually move the needle. Check back shortly.'}
-              </p>
-              {activeCategoryDoc ? (
-                <a href="/blog" className="btn btn-pill-red">
-                  All Articles <i className="fas fa-arrow-right" />
-                </a>
-              ) : (
-                <a href="/our-work" className="btn btn-pill-red">
-                  See Our Work <i className="fas fa-arrow-right" />
-                </a>
-              )}
-            </div>
-          )}
-        </div>
-      </section>
+      <BlogArchive
+        posts={result.docs}
+        categories={categories}
+        activeCategory={activeCategory}
+        query={query}
+        page={result.page || page}
+        totalPages={result.totalPages || 1}
+        basePath="/blog"
+      />
 
       <section className="blog-cta" aria-labelledby="blog-cta-title">
         <h2 id="blog-cta-title">

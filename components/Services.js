@@ -1,7 +1,16 @@
 import ServicePills from './ServicePills'
 import { GetInTouchButton, ScheduleMeetingButton } from './CtaButtons'
+import { mediaAlt, mediaUrl } from '../lib/media'
 
-export default function Services() {
+const DEFAULT_BULLETS = ['Creativity', 'Excellence', 'Reliability']
+
+export default function Services({ content }) {
+  const title = content?.servicesTitle || {}
+  const bullets = content?.servicesBullets?.length
+    ? content.servicesBullets.map((bullet) => bullet.label)
+    : DEFAULT_BULLETS
+  const image = mediaUrl(content?.servicesImage, 'hero') || '/assets/5.webp'
+
   return (
     <section id="services" className="services-section">
       <div className="section-container">
@@ -9,15 +18,17 @@ export default function Services() {
           {/* Left Side: Header & Services Pills */}
           <div className="services-left">
             <div className="eyebrow">
-              <span className="bullet-dot"></span> Our Services
+              <span className="bullet-dot"></span> {content?.servicesEyebrow || 'Our Services'}
             </div>
             <h2 className="services-title">
-              Bold <span className="highlight-red">Creative</span>
+              {title.lineOne || 'Bold'}{' '}
+              <span className="highlight-red">{title.lineOneAccent || 'Creative'}</span>
               <br />
-              Real <span className="highlight-red">Impact</span>
+              {title.lineTwo || 'Real'}{' '}
+              <span className="highlight-red">{title.lineTwoAccent || 'Impact'}</span>
             </h2>
 
-            <ServicePills />
+            <ServicePills services={content?.servicePills} />
 
             <div className="cta-btn-group">
               <GetInTouchButton />
@@ -28,15 +39,22 @@ export default function Services() {
           {/* Center Column: Puzzle Graphic */}
           <div className="services-center">
             <div className="puzzle-card">
-              <img src="/assets/5.webp" alt="StillLoud services puzzle integration illustration" width="1080" height="1920" loading="lazy" decoding="async" />
+              <img
+                src={image}
+                alt={mediaAlt(content?.servicesImage, 'StillLoud services illustration')}
+                width="1080"
+                height="1920"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
           </div>
 
           {/* Right Column: Projects & Bullets */}
           <div className="services-right">
             <div className="projects-delivered-card">
-              <h3>400+</h3>
-              <p>Projects Delivered</p>
+              <h3>{content?.servicesDeliveredValue || '400+'}</h3>
+              <p>{content?.servicesDeliveredLabel || 'Projects Delivered'}</p>
             </div>
 
             <div className="services-list-card">
@@ -46,15 +64,11 @@ export default function Services() {
                 </button>
               </div>
               <ul className="services-bullet-list">
-                <li>
-                  <span className="red-bullet">✦</span> Creativity
-                </li>
-                <li>
-                  <span className="red-bullet">✦</span> Excellence
-                </li>
-                <li>
-                  <span className="red-bullet">✦</span> Reliability
-                </li>
+                {bullets.map((bullet, index) => (
+                  <li key={`${bullet}-${index}`}>
+                    <span className="red-bullet">✦</span> {bullet}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>

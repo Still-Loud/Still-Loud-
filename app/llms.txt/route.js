@@ -9,28 +9,51 @@ const SITE = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stillloud.in'
  * answer engines (AEO/GEO). Follows the llms.txt convention: an H1 name, a
  * one-line summary, a blockquote of context, then linked sections.
  *
- * Regenerated hourly, and purged by the Posts hooks when an article changes.
+ * Regenerated hourly, and purged by content hooks when something changes.
  */
-async function latestPosts() {
+async function loadContent() {
   try {
     const payload = await getPayloadClient()
-    const { docs } = await payload.find({
-      collection: 'posts',
-      where: { _status: { equals: 'published' } },
-      sort: '-publishedAt',
-      limit: 20,
-      depth: 0,
-      overrideAccess: false,
-    })
-    return docs
+    const [posts, projects, pages] = await Promise.all([
+      payload
+        .find({
+          collection: 'posts',
+          where: { _status: { equals: 'published' } },
+          sort: '-publishedAt',
+          limit: 20,
+          depth: 0,
+          overrideAccess: false,
+        })
+        .catch(() => ({ docs: [] })),
+      payload
+        .find({
+          collection: 'projects',
+          where: { _status: { equals: 'published' } },
+          sort: 'order',
+          limit: 50,
+          depth: 0,
+          overrideAccess: false,
+        })
+        .catch(() => ({ docs: [] })),
+      payload
+        .find({
+          collection: 'pages',
+          where: { _status: { equals: 'published' } },
+          limit: 50,
+          depth: 0,
+          overrideAccess: false,
+        })
+        .catch(() => ({ docs: [] })),
+    ])
+    return { posts: posts.docs, projects: projects.docs, pages: pages.docs }
   } catch {
     // Build-time or DB blip: ship the static part of the file.
-    return []
+    return { posts: [], projects: [], pages: [] }
   }
 }
 
 export async function GET() {
-  const posts = await latestPosts()
+  const { posts, projects, pages } = await loadContent()
 
   const lines = [
     '# StillLoud',
@@ -46,7 +69,14 @@ export async function GET() {
     '',
     `- [Home](${SITE}/): services, process, pricing, client testimonials and contact details.`,
     `- [Our Work](${SITE}/our-work): portfolio of social media creatives, reels, logos, brand identities and printables.`,
+    `- [Projects](${SITE}/projects): written case studies with the brief, approach and result for selected clients.`,
     `- [Blog](${SITE}/blog): practical notes on branding, design and growth for small businesses.`,
+    ...(pages.length
+      ? pages.map(
+          (page) =>
+            `- [${page.title}](${SITE}/${page.slug})${page.description ? `: ${page.description}` : ''}`
+        )
+      : []),
     '',
     '## Services',
     '',
@@ -72,6 +102,17 @@ export async function GET() {
     '',
     '## Optional',
     '',
+    ...(projects.length
+      ? [
+          '### Recent projects',
+          '',
+          ...projects.map(
+            (project) =>
+              `- [${project.title}](${SITE}/projects/${project.slug})${project.description ? `: ${project.description}` : ''}`
+          ),
+          '',
+        ]
+      : []),
     ...(posts.length
       ? [
           '### Recent articles',

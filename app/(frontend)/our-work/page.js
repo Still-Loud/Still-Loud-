@@ -8,6 +8,8 @@ import WorkGallery from '../../../components/WorkGallery'
 import WorkCta from '../../../components/WorkCta'
 import Footer from '../../../components/Footer'
 import TawkTo from '../../../components/TawkTo'
+import { getPayloadClient } from '../../../lib/payload'
+import { projectToCard } from '../../../lib/projects'
 import { buildOpenGraph, buildTwitter } from '../../../lib/metadata'
 
 const TITLE = 'Our Work | StillLoud Portfolio — Creative, Logo & Branding Gallery'
@@ -34,6 +36,8 @@ export const metadata = {
   twitter: buildTwitter({ title: OG_TITLE, description: OG_DESCRIPTION }),
 }
 
+export const revalidate = 300
+
 const creativeWorkSchema = {
   '@context': 'https://schema.org',
   '@type': 'CreativeWork',
@@ -44,7 +48,19 @@ const creativeWorkSchema = {
   },
 }
 
-export default function OurWorkPage() {
+export default async function OurWorkPage() {
+  const payload = await getPayloadClient()
+  const { docs: projects } = await payload.find({
+    collection: 'projects',
+    where: { _status: { equals: 'published' } },
+    sort: 'order',
+    limit: 200,
+    depth: 1,
+    overrideAccess: false,
+  })
+
+  const cards = projects.map(projectToCard).filter(Boolean)
+
   return (
     <div className="ow-page">
       <script
@@ -56,7 +72,7 @@ export default function OurWorkPage() {
       <Navbar variant="work" />
       <WorkHero />
       <CaseStudy />
-      <WorkGallery />
+      <WorkGallery cards={cards} />
       <WorkCta />
       <Footer variant="work" />
       <TawkTo />

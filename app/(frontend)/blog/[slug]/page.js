@@ -11,24 +11,30 @@ import Navbar from '../../../../components/Navbar'
 import PostCard from '../../../../components/blog/PostCard'
 import TawkTo from '../../../../components/TawkTo'
 import { absoluteMediaUrl, formatDate, mediaUrl, readingTime } from '../../../../lib/media'
-import { OG_IMAGE, SITE_URL, buildOpenGraph, buildTwitter } from '../../../../lib/metadata'
+import { SITE_URL } from '../../../../lib/metadata'
+import { buildSeoMetadata } from '../../../../lib/seo'
 import { getPayloadClient } from '../../../../lib/payload'
+import { isPreview } from '../../../../lib/draft'
 
-export const revalidate = 60
+export const revalidate = 300
 
 const SITE = SITE_URL
 
 const getPost = cache(async (slug) => {
+  const preview = await isPreview()
   const payload = await getPayloadClient()
   const { docs } = await payload.find({
     collection: 'posts',
-    where: {
-      slug: { equals: slug },
-      _status: { equals: 'published' },
-    },
+    where: preview
+      ? { slug: { equals: slug } }
+      : {
+          slug: { equals: slug },
+          _status: { equals: 'published' },
+        },
     limit: 1,
     depth: 2,
-    overrideAccess: false,
+    draft: preview,
+    overrideAccess: preview,
   })
   return docs[0] || null
 })
@@ -44,35 +50,16 @@ export async function generateMetadata({ params }) {
     }
   }
 
-  const title = post.seo?.metaTitle || `${post.title} | StillLoud`
-  const description = post.seo?.metaDescription || post.excerpt
-  const image = absoluteMediaUrl(post.seo?.ogImage || post.heroImage, 'hero')
-  const ogImages = image
-    ? [{ url: image, alt: post.heroImage?.alt || post.title }]
-    : [OG_IMAGE]
-
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: `/blog/${post.slug}`,
-    },
-    openGraph: buildOpenGraph({
-      title,
-      description,
-      path: `/blog/${post.slug}`,
-      type: 'article',
-      images: ogImages,
-      publishedTime: post.publishedAt || undefined,
-      modifiedTime: post.updatedAt || undefined,
-    }),
-    twitter: buildTwitter({
-      title,
-      description,
-      images: ogImages.map((item) => item.url),
-    }),
-    robots: post.seo?.noIndex ? { index: false, follow: false } : undefined,
-  }
+  return buildSeoMetadata({
+    seo: post.seo,
+    title: `${post.title} | StillLoud`,
+    description: post.excerpt,
+    path: `/blog/${post.slug}`,
+    image: post.seo?.ogImage || post.heroImage,
+    type: 'article',
+    publishedTime: post.publishedAt || undefined,
+    modifiedTime: post.updatedAt || undefined,
+  })
 }
 
 export default async function BlogPostPage({ params }) {
@@ -81,6 +68,7 @@ export default async function BlogPostPage({ params }) {
 
   if (!post) notFound()
 
+  const preview = await isPreview()
   const payload = await getPayloadClient()
 
   const categories = (post.categories || []).filter(Boolean)
@@ -157,6 +145,15 @@ export default async function BlogPostPage({ params }) {
       <BackToTop />
       <Navbar variant="blog" />
 
+      {preview && (
+        <div className="preview-banner" role="status">
+          Draft preview — this article is not public.{' '}
+          <a href={`/api/exit-preview?path=${encodeURIComponent(`/blog/${post.slug}`)}`}>
+            Exit preview
+          </a>
+        </div>
+      )}
+
       <article>
         <header className="post-hero">
           <div className="post-hero-inner">
@@ -173,7 +170,7 @@ export default async function BlogPostPage({ params }) {
                 {categories.map((category) => (
                   <Link
                     key={category.id}
-                    href={`/blog?category=${encodeURIComponent(category.slug)}`}
+                    href={`/blog/category/${category.slug}`}
                     className="blog-cat-pill"
                   >
                     {category.title}
@@ -218,10 +215,20 @@ export default async function BlogPostPage({ params }) {
               {categories.map((category) => (
                 <Link
                   key={category.id}
-                  href={`/blog?category=${encodeURIComponent(category.slug)}`}
+                  href={`/blog/category/${category.slug}`}
                 >
                   {category.title}
                 </Link>
+              ))}
+            </div>
+          )}
+
+          {post.tags?.length > 0 && (
+            <div className="post-tags post-tags--keywords" aria-label="Tags">
+              {post.tags.map((item, index) => (
+                <span key={item.id || index} className="post-tag">
+                  #{item.tag}
+                </span>
               ))}
             </div>
           )}

@@ -1,11 +1,15 @@
+import { revalidate, projectPaths } from '../lib/revalidate.js'
 import { slugify } from '../lib/slugify.js'
-import { isAdmin, isAdminOrEditor } from './access.js'
+import { canPublish, isAdmin, publishedOrLoggedIn } from './access.js'
+import { seoField } from './fields/seo.js'
 
 /**
- * Portfolio items shown on /our-work.
+ * Portfolio projects.
  *
- * Images live in Media (Vercel Blob in production); videos stay on Cloudinary
- * as remote URLs (D4). Reel cards can carry an optional poster frame (D8).
+ * One record powers three things: the /our-work gallery card, the /projects
+ * listing and the /projects/<slug> detail page. Drafts never reach the public
+ * site (access rule + published-only queries). Featured projects can also drive
+ * the homepage case-study block.
  */
 /** @type {import('payload').CollectionConfig} */
 export const Projects = {
@@ -17,12 +21,20 @@ export const Projects = {
   admin: {
     group: 'Portfolio',
     useAsTitle: 'title',
-    defaultColumns: ['title', 'category', 'mediaType', 'featured', 'order', 'updatedAt'],
+    defaultColumns: ['title', 'category', 'featured', 'order', '_status', 'updatedAt'],
+    description:
+      'Portfolio work. Published projects appear on Our Work and get their own /projects/<slug> page.',
+    preview: ({ slug }) =>
+      slug ? `/api/preview?collection=projects&slug=${encodeURIComponent(slug)}` : null,
+  },
+  versions: {
+    drafts: true,
+    maxPerDoc: 20,
   },
   access: {
-    read: () => true,
-    create: isAdminOrEditor,
-    update: isAdminOrEditor,
+    read: publishedOrLoggedIn,
+    create: canPublish,
+    update: canPublish,
     delete: isAdmin,
   },
   hooks: {
@@ -34,12 +46,25 @@ export const Projects = {
         return data
       },
     ],
+    afterChange: [
+      async ({ doc, previousDoc }) => {
+        await revalidate(projectPaths(doc?.slug, previousDoc?.slug))
+        return doc
+      },
+    ],
+    afterDelete: [
+      async ({ doc }) => {
+        await revalidate(projectPaths(doc?.slug))
+        return doc
+      },
+    ],
   },
   fields: [
     {
       name: 'title',
       type: 'text',
       required: true,
+      label: 'Project title',
     },
     {
       name: 'slug',
@@ -49,6 +74,20 @@ export const Projects = {
       index: true,
       admin: {
         position: 'sidebar',
+        description: 'Used in the public URL: /projects/<slug>',
+      },
+    },
+    {
+      type: 'ui',
+      name: 'publicUrl',
+      admin: {
+        position: 'sidebar',
+        components: {
+          Field: {
+            path: '/components/admin/PublicUrl#PublicUrl',
+            clientProps: { collection: 'projects' },
+          },
+        },
       },
     },
     {
@@ -65,7 +104,7 @@ export const Projects = {
       ],
       admin: {
         position: 'sidebar',
-        description: 'Controls which filter tab the card appears under.',
+        description: 'Controls which filter tab the project appears under.',
       },
     },
     {
@@ -75,7 +114,7 @@ export const Projects = {
       defaultValue: 'image',
       options: [
         { label: 'Image', value: 'image' },
-        { label: 'Video (Cloudinary URL)', value: 'video' },
+        { label: 'Video', value: 'video' },
       ],
       admin: {
         position: 'sidebar',
@@ -85,61 +124,191 @@ export const Projects = {
       name: 'image',
       type: 'upload',
       relationTo: 'media',
+      label: 'Featured image',
       admin: {
         condition: (data) => data?.mediaType !== 'video',
+        description: 'Card and detail-page hero image.',
+      },
+    },
+    {
+      name: 'video',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'Uploaded video',
+      admin: {
+        condition: (data) => data?.mediaType === 'video',
+        description: 'Upload an MP4/MOV to the Media Library, or paste an existing Cloudinary URL below.',
       },
     },
     {
       name: 'videoUrl',
       type: 'text',
+      label: 'External video URL',
       admin: {
         condition: (data) => data?.mediaType === 'video',
-        description: 'Full Cloudinary (or other CDN) video URL.',
+        description: 'For videos already hosted on Cloudinary or another CDN. Overrides the upload.',
       },
     },
     {
       name: 'poster',
       type: 'upload',
       relationTo: 'media',
+      label: 'Video poster frame',
       admin: {
         condition: (data) => data?.mediaType === 'video',
         description: 'Optional still frame shown before the reel plays.',
       },
     },
     {
-      name: 'alt',
-      type: 'text',
-      admin: {
-        description: 'Alt text for image cards. Falls back to the project title.',
-      },
-    },
-    {
-      name: 'badge',
-      type: 'text',
-      admin: {
-        description: 'Small label on the card. Defaults to the category label.',
-      },
-    },
-    {
-      name: 'externalUrl',
-      type: 'text',
-      admin: {
-        description: 'Optional link — e.g. the client’s Instagram.',
-      },
-    },
-    {
-      name: 'description',
-      type: 'textarea',
-    },
-    {
-      name: 'client',
-      type: 'text',
-    },
-    {
-      name: 'year',
-      type: 'number',
-      min: 2000,
-      max: 2100,
+      type: 'tabs',
+      tabs: [
+        {
+          label: 'Content',
+          fields: [
+            {
+              name: 'description',
+              type: 'textarea',
+              label: 'Short description',
+              maxLength: 400,
+              admin: {
+                description: 'One or two sentences used on cards and in search results.',
+              },
+            },
+            {
+              name: 'content',
+              type: 'richText',
+              label: 'Full description',
+              admin: {
+                description:
+                  'The project story: brief, approach and result. Keep it in your own words.',
+              },
+            },
+            {
+              name: 'gallery',
+              type: 'array',
+              label: 'Gallery',
+              fields: [
+                {
+                  name: 'image',
+                  type: 'upload',
+                  relationTo: 'media',
+                  required: true,
+                },
+                {
+                  name: 'caption',
+                  type: 'text',
+                },
+              ],
+              admin: {
+                description: 'Additional images shown under the story. Drag to reorder.',
+              },
+            },
+          ],
+        },
+        {
+          label: 'Details',
+          fields: [
+            {
+              type: 'row',
+              fields: [
+                { name: 'client', type: 'text', admin: { width: '50%' } },
+                {
+                  name: 'completionDate',
+                  type: 'date',
+                  admin: {
+                    width: '50%',
+                    date: { pickerAppearance: 'monthOnly', displayFormat: 'MMM yyyy' },
+                    description: 'Month and year the work went live.',
+                  },
+                },
+              ],
+            },
+            {
+              name: 'services',
+              type: 'array',
+              label: 'Services provided',
+              fields: [{ name: 'label', type: 'text', required: true }],
+              admin: {
+                description: 'e.g. Brand identity, Social media design, Website.',
+              },
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'externalUrl',
+                  type: 'text',
+                  label: 'External project URL',
+                  admin: {
+                    width: '50%',
+                    description: 'Optional live site or client Instagram.',
+                  },
+                },
+                {
+                  name: 'alt',
+                  type: 'text',
+                  label: 'Image alt text',
+                  admin: {
+                    width: '50%',
+                    description: 'Falls back to the project title.',
+                  },
+                },
+              ],
+            },
+            {
+              name: 'badge',
+              type: 'text',
+              admin: {
+                description: 'Small label on the card. Defaults to the category label.',
+              },
+            },
+            {
+              name: 'year',
+              type: 'number',
+              min: 2000,
+              max: 2100,
+              admin: {
+                description: 'Legacy year field, kept for existing data. Use Completion date instead.',
+              },
+            },
+          ],
+        },
+        {
+          label: 'Case study',
+          fields: [
+            {
+              type: 'group',
+              name: 'caseStudy',
+              label: false,
+              fields: [
+                { name: 'headline', type: 'text' },
+                { name: 'summary', type: 'textarea' },
+                {
+                  name: 'stats',
+                  type: 'array',
+                  fields: [
+                    { name: 'label', type: 'text', required: true },
+                    { name: 'value', type: 'text', required: true },
+                    { name: 'suffix', type: 'text' },
+                  ],
+                },
+                {
+                  name: 'deliverables',
+                  type: 'array',
+                  fields: [{ name: 'label', type: 'text', required: true }],
+                },
+                { name: 'backgroundImage', type: 'upload', relationTo: 'media' },
+                { name: 'ctaLabel', type: 'text' },
+                { name: 'ctaUrl', type: 'text' },
+              ],
+            },
+          ],
+        },
+        {
+          label: 'SEO',
+          fields: [seoField],
+        },
+      ],
     },
     {
       name: 'order',
@@ -147,7 +316,7 @@ export const Projects = {
       defaultValue: 0,
       admin: {
         position: 'sidebar',
-        description: 'Lower numbers appear first.',
+        description: 'Lower numbers appear first on Our Work and /projects.',
       },
     },
     {
@@ -156,43 +325,8 @@ export const Projects = {
       defaultValue: false,
       admin: {
         position: 'sidebar',
-        description: 'Featured projects can drive the case-study section.',
+        description: 'Featured projects can drive the homepage case-study section.',
       },
-    },
-    {
-      type: 'collapsible',
-      label: 'Case study (featured project)',
-      admin: {
-        initCollapsed: true,
-      },
-      fields: [
-        {
-          type: 'group',
-          name: 'caseStudy',
-          label: false,
-          fields: [
-            { name: 'headline', type: 'text' },
-            { name: 'summary', type: 'textarea' },
-            {
-              name: 'stats',
-              type: 'array',
-              fields: [
-                { name: 'label', type: 'text', required: true },
-                { name: 'value', type: 'text', required: true },
-                { name: 'suffix', type: 'text' },
-              ],
-            },
-            {
-              name: 'deliverables',
-              type: 'array',
-              fields: [{ name: 'label', type: 'text', required: true }],
-            },
-            { name: 'backgroundImage', type: 'upload', relationTo: 'media' },
-            { name: 'ctaLabel', type: 'text' },
-            { name: 'ctaUrl', type: 'text' },
-          ],
-        },
-      ],
     },
   ],
 }
