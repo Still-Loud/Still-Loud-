@@ -44,6 +44,22 @@ npx lighthouse http://localhost:3000/ \
 check variance — mobile LCP lands in one of two ~800 ms clusters depending on
 when the hero's entrance animation completes, so single runs can read 70–78.
 
+## Follow-up: gallery images at 1000 px
+
+`/our-work` gallery cards render at ~344 CSS px (4-column masonry inside
+1600 px), so the 1400 px WebPs were 4x display width. Re-encoded to 1000 px
+(2.9x, still covers the lightbox): gallery 1.97 → 1.56 MB, `public/assets`
+2.8 → 2.2 MB.
+
+Lighthouse 12, mobile, same machine: total transfer 6 116 → 5 693 KB (image
+transfer in the new run: 1 648 KB). LCP stayed at 5.2 s and CLS at 0 — expected,
+because the LCP element is the nav logo, not a gallery image. The 67 vs 73
+performance score is run-to-run TBT variance, not a regression (see `runs/`).
+
+Sampled pixel diff against v1 for a gallery card: 0.12%. Full-page parity:
+1.93% desktop / 3.58% mobile, with the autoplaying case-study video accounting
+for most of it.
+
 ## Known remaining cost
 
 - `/our-work`: the case-study video autoplays, then gallery reels load as they
