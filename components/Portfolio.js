@@ -18,14 +18,14 @@ export default function Portfolio() {
             {/* Card 1 (Mobile branding) */}
             <div className="portfolio-card">
               <div className="portfolio-card-img">
-                <img src="/assets/1.svg" alt="Mobile branding application mockups" />
+                <img src="/assets/1.webp" alt="Mobile branding application mockups" width="1080" height="1350" loading="lazy" decoding="async" />
               </div>
             </div>
 
             {/* Card 2 (Brand Guidelines) */}
             <div className="portfolio-card">
               <div className="portfolio-card-img">
-                <img src="/assets/3.svg" alt="Brand identity design guidelines mockup" />
+                <img src="/assets/3.webp" alt="Brand identity design guidelines mockup" width="1080" height="1350" loading="lazy" decoding="async" />
               </div>
             </div>
           </div>

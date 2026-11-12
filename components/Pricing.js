@@ -1,7 +1,7 @@
 const PLANS = [
-  { img: '/assets/Packages/1.svg', alt: 'Starter Package', cls: 'card-starter' },
-  { img: '/assets/Packages/2.svg', alt: 'Growth Pro Package', cls: 'card-growth active' },
-  { img: '/assets/Packages/3.svg', alt: 'Authority Package', cls: 'card-authority' },
+  { img: '/assets/Packages/1.webp', alt: 'Starter Package', cls: 'card-starter' },
+  { img: '/assets/Packages/2.webp', alt: 'Growth Pro Package', cls: 'card-growth active' },
+  { img: '/assets/Packages/3.webp', alt: 'Authority Package', cls: 'card-authority' },
 ]
 
 export default function Pricing() {
@@ -20,7 +20,7 @@ export default function Pricing() {
         <div className="pricing-grid">
           {PLANS.map((plan) => (
             <a key={plan.cls} href="#contact" className={`pricing-card ${plan.cls}`}>
-              <img src={plan.img} alt={plan.alt} className="pricing-svg" />
+              <img src={plan.img} alt={plan.alt} className="pricing-svg" width="700" height="1244" loading="lazy" decoding="async" />
             </a>
           ))}
         </div>

@@ -11,7 +11,7 @@ export default function About() {
             <div className="visuals-col col-left">
               <div className="about-img-card">
                 <a href="#home" className="nav-logo-link">
-                  <img src="/assets/handshakes.svg" alt="stillLoud Logo" className="nav-logo" />
+                  <img src="/assets/handshakes.webp" alt="stillLoud Logo" className="nav-logo" width="760" height="1351" loading="lazy" decoding="async" />
                 </a>
               </div>
               <div className="about-stat-card">
@@ -27,7 +27,7 @@ export default function About() {
                 <p>Retention Rate</p>
               </div>
               <div className="about-img-card">
-                <img src="/assets/Brain.svg" alt="stillLoud Logo" className="nav-logo" />
+                <img src="/assets/Brain.webp" alt="stillLoud Logo" className="nav-logo" width="760" height="1351" loading="lazy" decoding="async" />
               </div>
             </div>
           </div>

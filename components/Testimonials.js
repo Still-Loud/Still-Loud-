@@ -6,42 +6,42 @@ import { useCallback, useEffect, useRef, useState } from 'react'
    3/2/1 slides per view, 4.5 s autoplay, hover pause, seamless clones, dots. */
 const TESTIMONIALS = [
   {
-    logo: '/assets/Testemonial_Logos/cardexia.jpg',
+    logo: '/assets/Testemonial_Logos/cardexia.webp',
     alt: 'Cardexia logo',
     name: 'By Team Cardexia',
     company: 'Cardexia',
     text: '"StillLoud has been an incredible partner online. Their team brings amazing designs to the table, beautifully showcased and impactful. Highly professional, responsive, and always ready to push boundaries for Cardexia."',
   },
   {
-    logo: '/assets/Testemonial_Logos/Kubes 1.png',
+    logo: '/assets/Testemonial_Logos/Kubes 1.webp',
     alt: 'Kubes logo',
     name: 'Ankit Gupta',
     company: 'KUBES STAYS',
     text: '"A huge shoutout to the amazing, innovative young team at StillLoud for driving our social media. Despite working with limited raw footage, their designs and creative solutions have been vital in helping Kubes grow."',
   },
   {
-    logo: '/assets/Testemonial_Logos/SIRAMANI CAMPS LOGO.jpg',
+    logo: '/assets/Testemonial_Logos/SIRAMANI CAMPS LOGO.webp',
     alt: 'Siramani logo',
     name: 'Sonu Ji',
     company: 'Siramani River camps',
     text: '"StillLoud transformed our brand presence completely. Their strategic approach to design and social media has made Siramani Camps stand out in a competitive market. Truly exceptional work!"',
   },
   {
-    logo: '/assets/Testemonial_Logos/Denory .jpg',
+    logo: '/assets/Testemonial_Logos/Denory .webp',
     alt: 'Denory logo',
     name: 'Denish Maniya',
     company: 'The Denory',
     text: '"Working with StillLoud was a game changer. They understood our brand vision immediately and delivered designs that perfectly matched our identity. Our online engagement has grown significantly."',
   },
   {
-    logo: '/assets/Testemonial_Logos/mahakali-industries-logo.png',
+    logo: '/assets/Testemonial_Logos/mahakali-industries-logo.webp',
     alt: 'Mahakali logo',
     name: 'Jay Panchal',
     company: 'Mahakali Industries',
     text: '"StillLoud delivered exactly what we needed — a strong industrial brand identity. Their professional approach and creative output exceeded our expectations. Proud to have them as our creative partner."',
   },
   {
-    logo: '/assets/Testemonial_Logos/Wllcraft_Logo.ico',
+    logo: '/assets/Testemonial_Logos/Wllcraft_Logo.webp',
     alt: 'Wllcraft logo',
     name: 'Wllcraft',
     company: 'By Team Wllcraft',

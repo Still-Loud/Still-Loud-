@@ -31,3 +31,6 @@ next-env.d.ts
 
 # regenerable visual-parity output
 /docs/parity
+
+# lighthouse repeat runs (variance evidence, regenerate on demand)
+/docs/lighthouse-after/runs

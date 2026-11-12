@@ -28,7 +28,7 @@ export default function Services() {
           {/* Center Column: Puzzle Graphic */}
           <div className="services-center">
             <div className="puzzle-card">
-              <img src="/assets/5.svg" alt="StillLoud services puzzle integration illustration" />
+              <img src="/assets/5.webp" alt="StillLoud services puzzle integration illustration" width="1080" height="1920" loading="lazy" decoding="async" />
             </div>
           </div>
 

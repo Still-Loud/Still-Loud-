@@ -11,9 +11,11 @@ export default function HeroGraphic() {
 
   return (
     <img
-      src="/assets/FrontPage%20design.svg"
+      src="/assets/FrontPage%20design.webp"
       alt="Hero Illustration"
       className="hero-illustration-img"
+      fetchPriority="high"
+      decoding="async"
       onClick={handleClick}
     />
   )

@@ -56,7 +56,7 @@ export default function CaseStudy() {
                     {/* Phone Screen Background / Video */}
                     <div className="fp-phone-screen-media">
                       <img
-                        src="/assets/bg_only.png"
+                        src="/assets/bg_only.webp"
                         alt="Kubes Brand Backdrop"
                         className="fp-phone-bg-img"
                         loading="eager"
@@ -64,7 +64,7 @@ export default function CaseStudy() {
                       <video
                         id="fp-phone-video"
                         ref={videoRef}
-                        src="https://res.cloudinary.com/n4d0qen2/video/upload/kubes_rooms_pqz0pq.mp4"
+                        src="https://res.cloudinary.com/n4d0qen2/video/upload/q_auto,w_720/kubes_rooms_pqz0pq.mp4"
                         className="fp-phone-video"
                         autoPlay
                         loop

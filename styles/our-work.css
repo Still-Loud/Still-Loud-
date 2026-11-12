@@ -276,7 +276,7 @@
 .fp-card-bg-contour {
   position: absolute;
   inset: 0;
-  background-image: url('/assets/BG_only.svg');
+  background-image: url('/assets/bg_only.webp');
   background-size: cover;
   background-position: center;
   opacity: 0.12;

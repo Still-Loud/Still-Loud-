@@ -1,0 +1,98 @@
+[
+  {
+    "page": "home-desktop",
+    "before": {
+      "performance": 43,
+      "LCP_ms": 6330,
+      "TBT_ms": 763,
+      "totalByteWeight_KB": 35747
+    },
+    "after": {
+      "report": "home-desktop.report.json",
+      "formFactor": "desktop",
+      "performance": 99,
+      "accessibility": 90,
+      "bestPractices": 100,
+      "seo": 100,
+      "FCP_ms": 268,
+      "LCP_ms": 1020,
+      "TBT_ms": 7,
+      "CLS": 0,
+      "SI_ms": 426,
+      "totalByteWeight_KB": 1255,
+      "lcpElement": null
+    }
+  },
+  {
+    "page": "home-mobile",
+    "before": {
+      "performance": 38,
+      "LCP_ms": 42191,
+      "TBT_ms": 3561,
+      "totalByteWeight_KB": 19546
+    },
+    "after": {
+      "report": "home-mobile.report.json",
+      "formFactor": "mobile",
+      "performance": 78,
+      "accessibility": 90,
+      "bestPractices": 100,
+      "seo": 100,
+      "FCP_ms": 976,
+      "LCP_ms": 4743,
+      "TBT_ms": 272,
+      "CLS": 0,
+      "SI_ms": 1147,
+      "totalByteWeight_KB": 960,
+      "lcpElement": null
+    }
+  },
+  {
+    "page": "our-work-desktop",
+    "before": {
+      "performance": 0,
+      "LCP_ms": null,
+      "TBT_ms": null,
+      "totalByteWeight_KB": 79277
+    },
+    "after": {
+      "report": "our-work-desktop.report.json",
+      "formFactor": "desktop",
+      "performance": 92,
+      "accessibility": 95,
+      "bestPractices": 100,
+      "seo": 100,
+      "FCP_ms": 294,
+      "LCP_ms": 1913,
+      "TBT_ms": 26,
+      "CLS": 0,
+      "SI_ms": 571,
+      "totalByteWeight_KB": 6047,
+      "lcpElement": null
+    }
+  },
+  {
+    "page": "our-work-mobile",
+    "before": {
+      "performance": 0,
+      "LCP_ms": null,
+      "TBT_ms": null,
+      "totalByteWeight_KB": 79089
+    },
+    "after": {
+      "report": "our-work-mobile.report.json",
+      "formFactor": "mobile",
+      "performance": 73,
+      "accessibility": 95,
+      "bestPractices": 100,
+      "seo": 100,
+      "FCP_ms": 1063,
+      "LCP_ms": 5192,
+      "TBT_ms": 333,
+      "CLS": 0,
+      "SI_ms": 1549,
+      "totalByteWeight_KB": 6116,
+      "lcpElement": null
+    }
+  }
+]

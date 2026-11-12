@@ -1,6 +1,9 @@
 import { Manrope, Poppins } from 'next/font/google'
 import Script from 'next/script'
 
+/* Icons first, then the site styles — the same cascade order as v1, where the
+   Font Awesome stylesheet was linked before style.css. */
+import '../../styles/fontawesome.css'
 import '../../styles/style.css'
 import '../../styles/responsive.css'
 
@@ -119,11 +122,6 @@ export default function FrontendLayout({ children }) {
   return (
     <html lang="en" className={`${poppins.variable} ${manrope.variable}`}>
       <head>
-        {/* FontAwesome Icons */}
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
@@ -141,7 +139,11 @@ export default function FrontendLayout({ children }) {
         </noscript>
         {children}
 
-        {/* Google Tag Manager */}
+        {/* Google Tag Manager — afterInteractive: fires once hydration is done,
+            late enough not to block first paint, early enough that every
+            session is captured. (lazyOnload was measured and made TBT worse —
+            the tags then run inside the interactive window instead of before
+            it.) */}
         <Script id="gtm" strategy="afterInteractive">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
