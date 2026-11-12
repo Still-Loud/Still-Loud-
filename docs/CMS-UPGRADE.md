@@ -131,10 +131,14 @@ repo; without it the CLI fails with `Cannot read properties of null`.
 
 ## Testing notes
 
-- Real Cloudinary uploads require `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`
-  and `CLOUDINARY_API_SECRET`. Without them the adapter is disabled and uploads
-  stay on local disk, so the app keeps working but the Cloudinary path cannot be
-  exercised. **Not yet tested against a live account.**
+- Real Cloudinary uploads were tested against the live account: image upload in
+  all five folders, generated size, replacement (old asset and old size
+  removed), video upload with duration/dimensions/format/bytes, poster frame,
+  delivery URLs, and delete with no orphans. Run it with:
+
+  ```bash
+  node --env-file=.env scripts/test-cloudinary.mjs
+  ```
 - Invitation emails need `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` and
   optionally `EMAIL_FROM`. Without them Payload logs the message (including the
   setup link), which still allows the flow to be tested. **A real inbox delivery
@@ -151,6 +155,8 @@ repo; without it the CLI fails with `Cannot read properties of null`.
   node --env-file=.env scripts/test-draft.mjs        # draft privacy
   node --env-file=.env scripts/test-redirect.mjs     # 301/302
   node --env-file=.env scripts/test-redirect.mjs --clean
+  node --env-file=.env scripts/test-cloudinary.mjs   # real uploads, self-cleaning
+  node --env-file=.env scripts/test-project-media.mjs # media on the site + revalidation
   ```
 
 ## Status
@@ -166,12 +172,16 @@ Working and verified against the real Neon database:
 - invite endpoint (403 anonymous, 200 admin), admin invite screen, deactivated
   login returns 403 with a readable message;
 - editable redirects return real 301/302;
+- real Cloudinary round trip: image upload in all folders, generated size,
+  replacement, video metadata/poster, delete with no orphans (72/72 checks);
+- frontend media + revalidation through the REST/admin path: a published
+  project appears on `/projects/<slug>`, the static `/projects` listing and
+  `/sitemap.xml` immediately, and disappears again after delete (12/12 checks);
 - baseline migration recorded as applied, no schema drift;
 - database left clean: 1 admin user, 1 draft legacy page, no test content.
 
 Blocked on credentials / deployment target:
 
-- live Cloudinary upload, replace, delete and poster-frame checks;
 - real SMTP delivery of invite/reset mail;
 - Vercel deployment (no project/token available in this environment).
 
