@@ -11,11 +11,12 @@ import Navbar from '../../../../components/Navbar'
 import PostCard from '../../../../components/blog/PostCard'
 import TawkTo from '../../../../components/TawkTo'
 import { absoluteMediaUrl, formatDate, mediaUrl, readingTime } from '../../../../lib/media'
+import { OG_IMAGE, SITE_URL, buildOpenGraph, buildTwitter } from '../../../../lib/metadata'
 import { getPayloadClient } from '../../../../lib/payload'
 
 export const revalidate = 60
 
-const SITE = process.env.NEXT_PUBLIC_SERVER_URL || 'https://stillloud.in'
+const SITE = SITE_URL
 
 const getPost = cache(async (slug) => {
   const payload = await getPayloadClient()
@@ -46,6 +47,9 @@ export async function generateMetadata({ params }) {
   const title = post.seo?.metaTitle || `${post.title} | StillLoud`
   const description = post.seo?.metaDescription || post.excerpt
   const image = absoluteMediaUrl(post.seo?.ogImage || post.heroImage, 'hero')
+  const ogImages = image
+    ? [{ url: image, alt: post.heroImage?.alt || post.title }]
+    : [OG_IMAGE]
 
   return {
     title,
@@ -53,21 +57,20 @@ export async function generateMetadata({ params }) {
     alternates: {
       canonical: `/blog/${post.slug}`,
     },
-    openGraph: {
+    openGraph: buildOpenGraph({
       title,
       description,
+      path: `/blog/${post.slug}`,
       type: 'article',
-      url: `${SITE}/blog/${post.slug}`,
+      images: ogImages,
       publishedTime: post.publishedAt || undefined,
       modifiedTime: post.updatedAt || undefined,
-      images: image ? [{ url: image, alt: post.heroImage?.alt || post.title }] : undefined,
-    },
-    twitter: {
-      card: 'summary_large_image',
+    }),
+    twitter: buildTwitter({
       title,
       description,
-      images: image ? [image] : undefined,
-    },
+      images: ogImages.map((item) => item.url),
+    }),
     robots: post.seo?.noIndex ? { index: false, follow: false } : undefined,
   }
 }

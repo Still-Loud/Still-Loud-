@@ -1,4 +1,5 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
@@ -45,6 +46,18 @@ export default buildConfig({
   }),
 
   sharp,
+
+  /* D4: uploads go to Vercel Blob in production. Until the store exists the
+     plugin is skipped and Media falls back to public/media on local disk, so
+     `npm run dev` works with no cloud credentials. */
+  plugins: process.env.BLOB_READ_WRITE_TOKEN
+    ? [
+        vercelBlobStorage({
+          collections: { media: true },
+          token: process.env.BLOB_READ_WRITE_TOKEN,
+        }),
+      ]
+    : [],
 
   // Server URL used for absolute links in emails and the admin UI.
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000',

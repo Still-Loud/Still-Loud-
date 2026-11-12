@@ -9,11 +9,22 @@ import Pricing from '../../components/Pricing'
 import Footer from '../../components/Footer'
 import BackToTop from '../../components/BackToTop'
 import TawkTo from '../../components/TawkTo'
+import { buildOpenGraph, buildTwitter } from '../../lib/metadata'
+
+const TITLE = 'StillLoud | Branding, Website Design & Creative Studio'
+const DESCRIPTION =
+  'Helping businesses grow through strategic branding, websites, social media design, and creative digital experiences.'
 
 export const metadata = {
   alternates: {
     canonical: '/',
   },
+  openGraph: buildOpenGraph({
+    title: TITLE,
+    description: DESCRIPTION,
+    path: '/',
+  }),
+  twitter: buildTwitter({ title: TITLE, description: DESCRIPTION }),
 }
 
 export default function HomePage() {

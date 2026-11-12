@@ -8,23 +8,30 @@ import WorkGallery from '../../../components/WorkGallery'
 import WorkCta from '../../../components/WorkCta'
 import Footer from '../../../components/Footer'
 import TawkTo from '../../../components/TawkTo'
+import { buildOpenGraph, buildTwitter } from '../../../lib/metadata'
+
+const TITLE = 'Our Work | StillLoud Portfolio — Creative, Logo & Branding Gallery'
+const DESCRIPTION =
+  "Explore StillLoud's creative portfolio — social media creatives, logo design, branding, and printables. Premium design work built for brands that want to stand out."
+const OG_TITLE = 'Our Work | StillLoud Portfolio'
+const OG_DESCRIPTION =
+  'Explore our gallery of social media creatives, logos, branding, and printable designs.'
 
 export const metadata = {
-  title: 'Our Work | StillLoud Portfolio — Creative, Logo & Branding Gallery',
-  description:
-    "Explore StillLoud's creative portfolio — social media creatives, logo design, branding, and printables. Premium design work built for brands that want to stand out.",
+  title: TITLE,
+  description: DESCRIPTION,
   keywords:
     'StillLoud portfolio, creative work, logo design, branding, social media creatives, printables, design agency portfolio, India',
   authors: [{ name: 'StillLoud' }],
   alternates: {
     canonical: '/our-work',
   },
-  openGraph: {
-    title: 'Our Work | StillLoud Portfolio',
-    description:
-      'Explore our gallery of social media creatives, logos, branding, and printable designs.',
-    type: 'website',
-  },
+  openGraph: buildOpenGraph({
+    title: OG_TITLE,
+    description: OG_DESCRIPTION,
+    path: '/our-work',
+  }),
+  twitter: buildTwitter({ title: OG_TITLE, description: OG_DESCRIPTION }),
 }
 
 const creativeWorkSchema = {

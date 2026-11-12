@@ -1,6 +1,8 @@
 import { Manrope, Poppins } from 'next/font/google'
 import Script from 'next/script'
 
+import { SITE_URL, buildOpenGraph, buildTwitter } from '../../lib/metadata'
+
 /* Icons first, then the site styles — the same cascade order as v1, where the
    Font Awesome stylesheet was linked before style.css. */
 import '../../styles/fontawesome.css'
@@ -24,20 +26,28 @@ const manrope = Manrope({
   display: 'swap',
 })
 
+const PAGE_TITLE = 'StillLoud | Branding, Website Design & Creative Studio'
+const PAGE_DESCRIPTION =
+  'StillLoud is a creative branding and digital design studio helping businesses grow through strategic branding, logo design, social media creatives, website design, UI/UX, and digital marketing solutions.'
+
 export const metadata = {
-  metadataBase: new URL('https://stillloud.in'),
-  title: 'StillLoud | Branding, Website Design & Creative Studio',
-  description:
-    'StillLoud is a creative branding and digital design studio helping businesses grow through strategic branding, logo design, social media creatives, website design, UI/UX, and digital marketing solutions.',
+  metadataBase: new URL(SITE_URL),
+  title: PAGE_TITLE,
+  description: PAGE_DESCRIPTION,
   keywords:
     'StillLoud, branding agency, branding studio, creative agency, logo design, brand identity, website design, web development, UI UX design, social media design, digital branding, marketing creatives, graphic design, creative studio, business branding, startup branding, small business branding, portfolio, creative services, India branding agency',
   authors: [{ name: 'StillLoud' }],
-  openGraph: {
+  openGraph: buildOpenGraph({
     title: 'StillLoud | Branding & Creative Design Studio',
     description:
       'Helping businesses grow through strategic branding, websites, social media design, and creative digital experiences.',
-    type: 'website',
-  },
+    path: '/',
+  }),
+  twitter: buildTwitter({
+    title: 'StillLoud | Branding & Creative Design Studio',
+    description:
+      'Helping businesses grow through strategic branding, websites, social media design, and creative digital experiences.',
+  }),
   icons: {
     icon: '/assets/logo.svg',
   },
@@ -54,7 +64,7 @@ export const viewport = {
   initialScale: 1,
 }
 
-const SITE = 'https://stillloud.in'
+const SITE = SITE_URL
 
 const organizationSchema = {
   '@context': 'https://schema.org',

@@ -6,23 +6,30 @@ import Navbar from '../../../components/Navbar'
 import PostCard from '../../../components/blog/PostCard'
 import TawkTo from '../../../components/TawkTo'
 import { getPayloadClient } from '../../../lib/payload'
+import { buildOpenGraph, buildTwitter } from '../../../lib/metadata'
+
+const TITLE = 'Blog | StillLoud — Branding, Design & Growth Notes'
+const DESCRIPTION =
+  'Practical notes on branding, logo design, social media and websites for small businesses — from the StillLoud studio.'
+const OG_TITLE = 'Blog | StillLoud'
+const OG_DESCRIPTION =
+  'Practical notes on branding, design and growth for small businesses — from the StillLoud studio.'
 
 export const metadata = {
-  title: 'Blog | StillLoud — Branding, Design & Growth Notes',
-  description:
-    'Practical notes on branding, logo design, social media and websites for small businesses — from the StillLoud studio.',
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: {
     canonical: '/blog',
     types: {
       'application/rss+xml': '/blog/rss.xml',
     },
   },
-  openGraph: {
-    title: 'Blog | StillLoud',
-    description:
-      'Practical notes on branding, design and growth for small businesses — from the StillLoud studio.',
-    type: 'website',
-  },
+  openGraph: buildOpenGraph({
+    title: OG_TITLE,
+    description: OG_DESCRIPTION,
+    path: '/blog',
+  }),
+  twitter: buildTwitter({ title: OG_TITLE, description: OG_DESCRIPTION }),
 }
 
 export const revalidate = 60

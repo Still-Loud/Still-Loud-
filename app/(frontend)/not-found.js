@@ -2,9 +2,18 @@ import '../../styles/not-found.css'
 
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
+import { buildOpenGraph, buildTwitter } from '../../lib/metadata'
+
+const TITLE = 'Page Not Found | StillLoud'
+const DESCRIPTION =
+  "The page you're looking for doesn't exist or has moved. Let's get you back to the loud part."
 
 export const metadata = {
-  title: 'Page Not Found | StillLoud',
+  title: TITLE,
+  description: DESCRIPTION,
+  robots: { index: false, follow: true },
+  openGraph: buildOpenGraph({ title: TITLE, description: DESCRIPTION }),
+  twitter: buildTwitter({ title: TITLE, description: DESCRIPTION }),
 }
 
 export default function NotFound() {
