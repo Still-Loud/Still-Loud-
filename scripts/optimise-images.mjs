@@ -7,21 +7,32 @@
  * width and records what it produced.
  *
  *   node scripts/optimise-images.mjs
+ *   ASSETS_SOURCE=../v1/still-loud-web/assets node scripts/optimise-images.mjs --only="OUR WORK"
  *
- * Originals are left untouched; delete them once the site has been checked.
+ * ASSETS_SOURCE points at the folder holding the original print-resolution
+ * files (the v1 tree is kept locally as the reference). Output always lands in
+ * public/assets. Originals are left untouched.
  */
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import sharp from 'sharp'
 
 const ROOT = path.resolve('public/assets')
+const SOURCE = process.env.ASSETS_SOURCE
+  ? path.resolve(process.env.ASSETS_SOURCE)
+  : ROOT
+
+const onlyArg = process.argv.find((arg) => arg.startsWith('--only='))
+const ONLY = onlyArg ? onlyArg.slice('--only='.length).toLowerCase() : null
 
 /** dir (relative to public/assets) -> max pixel width */
 const RULES = [
-  // Portfolio gallery — masonry columns are ~380 px wide at 1440.
-  { dir: 'OUR WORK page/Creatives', width: 1400, quality: 82 },
-  { dir: 'OUR WORK page/Logos', width: 1400, quality: 82 },
-  { dir: 'OUR WORK page/Printables', width: 1400, quality: 82 },
+  // Portfolio gallery — masonry is 4 columns inside 1600 px, so a card is
+  // ~344 CSS px at 1440 and ~384 px at the 1600 max. 1000 px keeps it sharp
+  // at 3x and covers the lightbox (max 88vh tall).
+  { dir: 'OUR WORK page/Creatives', width: 1000, quality: 82 },
+  { dir: 'OUR WORK page/Logos', width: 1000, quality: 82 },
+  { dir: 'OUR WORK page/Printables', width: 1000, quality: 82 },
   // Testimonial avatars render at 56–72 px.
   { dir: 'Testemonial_Logos', width: 240, quality: 88 },
   // Pricing artwork renders at ~320 px.
@@ -56,34 +67,43 @@ async function convert(input, output, width, quality) {
 
 async function main() {
   const results = []
+  const rules = ONLY
+    ? RULES.filter((rule) => (rule.dir || '').toLowerCase().includes(ONLY))
+    : RULES
 
-  for (const rule of RULES) {
-    const dir = rule.dir ? path.join(ROOT, rule.dir) : ROOT
+  if (rules.length === 0) {
+    console.log(`No rules match --only=${ONLY}`)
+    return
+  }
+
+  for (const rule of rules) {
+    const dir = rule.dir ? path.join(SOURCE, rule.dir) : SOURCE
+    const outDir = rule.dir ? path.join(ROOT, rule.dir) : ROOT
     const names = rule.files || (await fs.readdir(dir)).filter((f) => RASTER.test(f))
 
     for (const name of names) {
       if (!RASTER.test(name)) continue
       const input = path.join(dir, name)
       const base = name.replace(/\.[^.]+$/, '')
-      const output = path.join(dir, rule.out || `${base}.webp`)
+      const output = path.join(outDir, rule.out || `${base}.webp`)
 
       try {
         await fs.access(input)
       } catch {
-        results.push({ name: path.relative(ROOT, input), skipped: true })
+        results.push({ name: path.relative(SOURCE, input), skipped: true })
         continue
       }
 
       try {
         const { before, after } = await convert(input, output, rule.width, rule.quality)
         results.push({
-          name: path.relative(ROOT, input),
+          name: path.relative(SOURCE, input),
           out: path.relative(ROOT, output),
           before,
           after,
         })
       } catch (error) {
-        results.push({ name: path.relative(ROOT, input), error: error.message })
+        results.push({ name: path.relative(SOURCE, input), error: error.message })
       }
     }
   }

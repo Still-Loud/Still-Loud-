@@ -17,7 +17,7 @@ Defaults agreed before code, recorded so later steps don't silently drift.
 
 | ID | Decision | Choice | Why |
 |---|---|---|---|
-| D9 | Image format | WebP at display width, originals archived outside the repo | v1 shipped print-resolution PNG/JPG/SVG (97.8 MB in `public/assets`); WebP at 1400/1080/760/240 px is 2.8 MB with no visible loss. `scripts/optimise-images.mjs` regenerates. |
+| D9 | Image format | WebP at display width, originals archived outside the repo | v1 shipped print-resolution PNG/JPG/SVG (97.8 MB in `public/assets`); WebP at 1000/1080/760/240 px is 2.2 MB with no visible loss. Gallery cards render at ~344 CSS px, so 1000 px covers 2.9x DPR and the lightbox. `scripts/optimise-images.mjs` regenerates; set `ASSETS_SOURCE` to read originals from the v1 tree and `--only=OUR` to redo just the gallery. |
 | D10 | Video delivery | Cloudinary transform `q_auto,w_720` on every embed | 12.2 MB → 3.2 MB for the case study; same for the reels. The transform is delivery-side, the uploaded original is untouched. |
 | D11 | Icons | Self-hosted Font Awesome 6.4.0, subset to the classes in use | 100 KB render-blocking stylesheet → 12 KB bundled into the site CSS. `scripts/fontawesome-subset.mjs` scans `components/`, `app/`, `styles/` and must be re-run when a new `fa-*` class is added. |
 | D12 | Tags | GTM + GA4 stay `afterInteractive` | `lazyOnload` was measured: TBT rose (254 → 442 ms) because the tags then execute inside the interactive window. Revisit if the client consolidates to GTM only. |
